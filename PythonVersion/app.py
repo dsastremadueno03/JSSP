@@ -4,12 +4,14 @@ import random
 # Times for each operation in each machine (m,o)
 # -1 indicates that the operation is not possible in that machine
 times = [
-    [2, 3, -1, 7, 2, 3, 2],
-    [-1, 2, 3, 5, 8, -1, 1],
+    [2, 3, -1, 7, 2, 3, 2, 3, 2, 1],
+    [-1, 2, 3, 5, 8, -1, 1, 3, -1, 2]
 ]
 
 # Operations to do (each operation belongs to a job)
-operations = [[1, 2, 3], [4, 5], [6, 7]]
+operations = [[1, 2, 3], [4, 5], [6, 7], [8, 9, 10]]
+
+tree = []
 
 #FUNCTIONS
 # Returns the number of operations in total
@@ -95,33 +97,58 @@ def produceChild(parent1, parent2):
         return child
     else:
         return produceChild(parent1, parent2)
+    
+
+# Mutates a child (changes a random operation to another possible machine)
+def mutateChild(child):
+    newChild = []
+    for op in child:
+        newChild.append(op.copy())
+    i = random.randint(0, len(newChild)-1)
+    machine = newChild[i][0]
+    if machine == 0:
+        newChild[i][0] = 1
+    else:
+        newChild[i][0] = 0
+    if checkSchedule(newChild):
+        return newChild
+    else:
+        return mutateChild(child)
+
         
 
 # MAIN
 
-tree = []
-
+# Parent 1
 parent1 = generateParent()
 print("parent 1: ")
 print(parent1)
 print("time: ")
 print(calcTime(parent1))
 tree.append(parent1)
+
+# Parent 2
 parent2 = generateParent()
 print("parent 2: ")
 print(parent2)
 print("time: ")
 print(calcTime(parent2))
 tree.append(parent2)
+
+# Child 1
 child1 = produceChild(parent1, parent2)
+while child1 in tree:
+    child1 = mutateChild(child1)
 print("child 1: ")
 print(child1)
 print("time: ")
 print(calcTime(child1))
 tree.append(child1)
+
+# Child 2
 child2 = produceChild(parent1, parent2)
-while (child2 == child1):
-    child2 = produceChild(parent1, parent2)
+while child2 in tree:
+    child2 = mutateChild(child2)
 print("child 2: ")
 print(child2)
 print("time: ")
