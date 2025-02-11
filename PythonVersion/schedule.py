@@ -17,3 +17,18 @@ class Schedule:
             self.endTask.append(-1)
 
     
+    # Updates the schedule in a certain task, machine and job
+    def updateSchedule(self, job, machine, taskPosition, problem):
+        if self.endTask[job] == -1 and self.endMachine[machine] == -1: # If it is the first task to do in its job and machine
+            self.startTimeTasks[taskPosition] = 0
+        else:
+            self.startTimeTasks[taskPosition] = max(self.endTask[job], self.endMachine[machine]) # It will start inmediately after the previous task is done and the machine is free
+        # Update data of arrays
+        self.endTimeTasks[taskPosition] = self.startTimeTasks[taskPosition] + problem.getData(machine, taskPosition)[0]
+        #print(str(machine) + " " + str(taskPosition) + " " + str(problem.getData(machine, taskPosition)[0]))
+        #print("EndTime " + str(taskPosition) + ": " + str(self.endTimeTasks[taskPosition]))
+        self.endMachine[machine] = self.endTimeTasks[taskPosition]
+        #print("EndMachine " + str(machine) + ": " + str(self.endMachine[machine]))
+        self.endTask[job] = self.endTimeTasks[taskPosition]
+        #print("EndTask " + str(job) + ": " + str(self.endTask[job]))
+    

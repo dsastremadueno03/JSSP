@@ -2,6 +2,7 @@ from individual import Individual
 from problem import Problem
 from schedule import Schedule
 import random
+import time
 
 
 # EXAMPLE DATA
@@ -44,7 +45,10 @@ def genIndividual(problem):
         jobs[job] += 1
         # Choose machine to do task in
         machine = random.randint(0, problem.nMachines-1)
-        while tasksMachines[machine][job+jobs[job]-1] == [-1,-1]: # As long as that machine can do the task
+        totalJob = 0
+        for j in range(job):
+            totalJob += problem.jobTasks[j]
+        while problem.getData(machine, totalJob + jobs[job]-1) == [-1,-1]: # As long as that machine can do the task
             machine = random.randint(0, problem.nMachines-1)
         machines.append(machine)
     return Individual(tasks, machines)
@@ -57,6 +61,13 @@ def genIndividual(problem):
 
 parent1 = genIndividual(PROBLEM)
 print(parent1)
+parent1.genSchedule(PROBLEM)
+parent1.showSchedule(PROBLEM)
+#print(parent1.schedule.startTimeTasks)
+#print(parent1.schedule.endTimeTasks)
+#print(parent1.schedule.endTask)
+#print(parent1.schedule.endMachine)
+print("FIN")
 
 
 

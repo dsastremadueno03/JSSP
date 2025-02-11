@@ -13,6 +13,9 @@ class Problem:
         # No possible operation: (-1,-1)
         self.tasksMachines = tasksMachines 
 
+    def getData(self, machine, task):
+        return self.tasksMachines[machine][task]
+        
     
 
 
