@@ -1,13 +1,16 @@
+from schedule import Schedule
 class Individual:
 
-    def __init__(self, taskArray, machineArray):
-        self.taskArray = taskArray
-        self.machineArray = machineArray
-        self.tasksPermutation = []
-        self.machinePermutation = []
+    def __init__(self, taskPermutation, machinePermutation):
+        self.tasksPermutation = taskPermutation
+        self.machinePermutation = machinePermutation
         self.tardiness = 0
         self.energyCost = 0
         self.fitness = 0
-        self.Schedule = None
+        self.schedule = None
 
+    def __str__(self):
+        return str(self.tasksPermutation) + "\n" + str(self.machinePermutation) + "\n" + str(self.tardiness) + "\n" + str(self.energyCost) + "\n" + str(self.fitness)
     
+    def genSchedule(self):
+        schedule = Schedule()
