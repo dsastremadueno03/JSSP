@@ -62,11 +62,11 @@ def genIndividual(problem):
 parent1 = genIndividual(PROBLEM)
 print(parent1)
 parent1.genSchedule(PROBLEM)
-parent1.showSchedule(PROBLEM)
-#print(parent1.schedule.startTimeTasks)
-#print(parent1.schedule.endTimeTasks)
-#print(parent1.schedule.endTask)
-#print(parent1.schedule.endMachine)
+#parent1.showSchedule(PROBLEM)
+print(parent1.schedule.startTimeTasks)
+print(parent1.schedule.endTimeTasks)
+print(parent1.schedule.endTask)
+print(parent1.schedule.endMachine)
 print("FIN")
 
 
