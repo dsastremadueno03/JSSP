@@ -1,10 +1,14 @@
 from schedule import Schedule
+from problem import Problem
+import matplotlib.pyplot as plt
+import random
+
 class Individual:
 
     def __init__(self, taskPermutation, machinePermutation):
         self.tasksPermutation = taskPermutation
         self.machinePermutation = machinePermutation
-        self.tardiness = 0
+        self.tardiness = []
         self.energyCost = 0
         self.fitness = 0
         self.schedule = None
@@ -32,31 +36,14 @@ class Individual:
                 totalJob += problem.jobTasks[i] # Add the previous tasks to get to the initial pos for the job in the array
             taskPosition = totalJob + jobTasks[job] - 1
             self.schedule.updateSchedule(job, machine, taskPosition, problem)
-        print("Schedule has been generated correctly!")
+        #print("Schedule has been generated correctly!")
+        
+    def evaluate(self, problem):
+        for i in range(problem.nJobs):
+            late = self.schedule.endTask[i] - problem.dueDates[i] 
+            if late < 0:
+                self.tardiness.append(0)
+            else:
+                self.tardiness.append(late)
+        self.fitness = max(self.schedule.endTimeTasks)
             
-    def showSchedule(self, problem):
-        s = "  \t"
-        for i in range(50):
-            s += str(i) + " "
-        s += "\n"
-        for i in range(problem.nMachines):
-            s += "M" + str(i+1) + "\t"
-            startTime = []
-            for j in range(problem.nTasks):
-                startTime.append(self.schedule.startTimeTasks[j])
-            stop = max(startTime) + 1
-            endTime = 0
-            while min(startTime) < stop:
-                index = startTime.index(min(startTime))
-                startTime[index] = max(startTime) + 1
-                if self.machinePermutation[index] == i:
-                    for k in range(self.schedule.startTimeTasks[index] - endTime):
-                        s += "  "
-                    if endTime == 0:
-                        s += "- "
-                    for k in range(self.schedule.endTimeTasks[index] - self.schedule.startTimeTasks[index] - 1 ):
-                        s += "- "
-                    s += "+ "
-                    endTime = self.schedule.endTimeTasks[index]     
-            s += "\n"
-        print(s)

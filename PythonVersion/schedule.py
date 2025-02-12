@@ -23,9 +23,10 @@ class Schedule:
             self.startTimeTasks[taskPosition] = 0
         else:
             self.startTimeTasks[taskPosition] = max(self.endTask[job], self.endMachine[machine]) # It will start inmediately after the previous task is done and the machine is free
-        print("Task: " + str(taskPosition))
-        print("Machine: " + str(machine))
-        print("EndTask: " + str(self.endTask[job]) + " EndMachine: " + str(self.endMachine[machine]))
+        #print("\nTask: " + str(taskPosition))
+        #print("Machine: " + str(machine))
+        #print("EndTask: " + str(self.endTask[job]) + " EndMachine: " + str(self.endMachine[machine]))
+        #print("Time Taken: "+ str(problem.getData(machine, taskPosition)[0]))
         # Update data of arrays
         self.endTimeTasks[taskPosition] = self.startTimeTasks[taskPosition] + problem.getData(machine, taskPosition)[0]
         self.endMachine[machine] = self.endTimeTasks[taskPosition]
