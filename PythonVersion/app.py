@@ -69,6 +69,7 @@ print(parent1.schedule.endTimeTasks)
 parent1.evaluate(PROBLEM)
 print("Fitness: " + str(parent1.fitness))
 print("DueDates: " + str(parent1.tardiness))
+print("Energy Consumption: " + str(parent1.energyCost))
 print("FIN")
 
 
