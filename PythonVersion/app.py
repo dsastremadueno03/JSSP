@@ -59,6 +59,7 @@ def genIndividual(problem):
 
 ###    MAIN    ###
 
+# TEST 1 -> Generate two individuals
 parent1 = genIndividual(PROBLEM)
 print(parent1)
 parent1.genSchedule(PROBLEM)
@@ -73,11 +74,28 @@ print("Energy Consumption: " + str(parent1.energyCost))
 print("FIN")
 
 
-
+parent2 = genIndividual(PROBLEM)
+print(parent2)
+parent2.genSchedule(PROBLEM)
+print(parent2.schedule.startTimeTasks)
+print(parent2.schedule.endTimeTasks)
+#print(parent2.schedule.endTask)
+#print(parent2.schedule.endMachine)
+parent2.evaluate(PROBLEM)
+print("Fitness: " + str(parent2.fitness))
+print("DueDates: " + str(parent2.tardiness))
+print("Energy Consumption: " + str(parent2.energyCost))
+print("FIN")
             
 
-    
-        
+# TEST 2 -> Generate two children 
+
+child1 = parent1.merge(parent2, PROBLEM)
+print(child1)
+child2 = parent2.merge(parent1, PROBLEM)
+while child2.tasksPermutation == child1.tasksPermutation:
+    child2 = parent2.merge(parent1, PROBLEM)
+print(child2) 
         
     
 

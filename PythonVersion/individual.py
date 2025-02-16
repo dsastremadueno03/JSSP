@@ -66,3 +66,43 @@ class Individual:
         #TODO: ADD ENERGY CONSUMPTION TO IT
         self.fitness = max(self.schedule.endTimeTasks) # Calculate fitness 
             
+    # Follows a job order crossover where self takes half or their jobs and the other half from the second parent
+    def merge(self, individual2, problem):
+        # Prepare matrices to save data
+        newTasks = []
+        newMachines = []
+        for i in range(problem.nTasks):
+            newTasks.append(-1)
+            newMachines.append(-1)
+        
+            
+        # Select which jobs to take from self
+        jobsForSelf = [] # Stores the jobs that should be copied from self
+        jobsForSecond = [] # Stores the indexes of the jobs taken from individual2
+        for i in range(problem.nJobs//2):
+            job = random.randint(0, problem.nJobs-1)
+            while job in jobsForSelf:
+                job = random.randint(0, problem.nJobs-1) 
+            jobsForSelf.append(job)
+            
+        print(jobsForSelf)
+        for i in range(problem.nTasks):
+            if individual2.tasksPermutation[i] not in jobsForSelf:
+                jobsForSecond.append(i)
+        
+        # Copy the jobs from self in their position inside the child's arrays
+        # First, we copy the tasks in self
+        for i in range(problem.nTasks):
+            if self.tasksPermutation[i] in jobsForSelf:
+                newTasks[i] = self.tasksPermutation[i]  
+                newMachines[i] = self.machinePermutation[i]
+        # Next, we complete the array with those from the second parent
+        for i in range(problem.nTasks):
+            j = 0 # index for second parent
+            if newTasks[i] == -1:
+                newTasks[i] = individual2.tasksPermutation[jobsForSecond[j]]
+                newMachines[i] = individual2.tasksPermutation[jobsForSecond[j]]
+                j += 1
+            
+        child = Individual(newTasks, newMachines)
+        return child
