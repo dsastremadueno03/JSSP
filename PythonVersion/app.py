@@ -23,7 +23,7 @@ tasksMachines = [
     [[1,3], [-1,-1], [2,2], [1,3], [2,4], [2,3], [1,2]] #Machine 2
 ]
 
-mutationProb = 75 # Probability in % to get a mutation in a child
+mutationProb = 5 # Probability in % to get a mutation in a child
 
 # Creation of the problem
 PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines, mutationProb) #FINAL
@@ -58,21 +58,16 @@ def genIndividual(problem):
     return individual
 
 # Returns the best two individuals in a family of 2 parents and 2 children
-def getBestTwo(parent1, parent2, child1, child2):
+def getBestTwo(fam):
     result = [] # Stores the best two individuals
-    family = [] # Stores the individuals involved
-    family.append(parent1)
-    family.append(parent2)
-    family.append(child1)
-    family.append(child2)
     fitness = [] # Stores the fitness of the individuals
-    fitness.append(parent1.fitness)
-    fitness.append(parent2.fitness)
-    fitness.append(child1.fitness)
-    fitness.append(child2.fitness)
+    fitness.append(fam[0].fitness)
+    fitness.append(fam[1].fitness)
+    fitness.append(fam[2].fitness)
+    fitness.append(fam[3].fitness)
     for i in range(2):
         index = fitness.index(min(fitness)) # Depends whether the fitness is better as a high or as a low value
-        result.append(family.pop(index))
+        result.append(fam.pop(index))
         fitness.pop(index)
     return result
     
@@ -84,8 +79,57 @@ def getBestTwo(parent1, parent2, child1, child2):
 ###    MAIN    ###
 ##################
 
+N_INDIVIDUALS = 20
+currentGeneration = []
+nextGeneration = []
 
-# TEST 1 -> Generate two individuals
+# 1st -> Create initial pairs of individuals
+
+for i in range(N_INDIVIDUALS//2):
+    
+    family = [genIndividual(PROBLEM), genIndividual(PROBLEM)]
+    currentGeneration.append(family)
+
+
+# Start genetic algorithm
+for i in range(20):
+    print("Generation " + str(i) + " in progress...")
+    # 2nd -> Create children and evaluate
+    for family in currentGeneration:
+        family.append(family[0].merge(family[1], PROBLEM))
+        family.append(family[1].merge(family[0], PROBLEM))
+        best = getBestTwo(family)
+
+    # 3rd -> Add to new generation the best two per family
+
+        nextGeneration.append(best[0])
+        nextGeneration.append(best[1])
+        
+    # 4th -> Shuffle generation (different genes) and join in pairs again
+    random.shuffle(nextGeneration)
+    currentGeneration.clear()
+    for i in range(0, N_INDIVIDUALS//2, 2):
+        currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
+
+# Show best individual obtained
+fitness = []
+for family in currentGeneration:
+    fitness.append(family[0].fitness)
+    fitness.append(family[1].fitness)
+minIndex = fitness.index(min(fitness))
+best = currentGeneration[minIndex//2][minIndex%2]
+print(best)
+print(best.schedule.startTimeTasks)
+print(best.schedule.endTimeTasks)
+print("Fitness: " + str(best.fitness))
+print("Energy Consumption: " + str(best.energyCost))
+    
+
+
+
+"""
+
+# TEST 1.1 -> Generate two individuals
 parent1 = genIndividual(PROBLEM)
 print("\nParent 1")
 print(parent1)
@@ -110,7 +154,7 @@ print("DueDates: " + str(parent2.tardiness))
 print("Energy Consumption: " + str(parent2.energyCost))
             
 
-# TEST 2 -> Generate two children 
+# TEST 1.2 -> Generate two children 
 
 child1 = parent1.merge(parent2, PROBLEM)
 print("\nChild 1")
@@ -127,7 +171,7 @@ print("Fitness: " + str(child2.fitness))
 print("DueDates: " + str(child2.tardiness))
 print("Energy Consumption: " + str(child2.energyCost))
 
-# TEST 3 -> Get the best two out of the four individuals
+# TEST 1.3 -> Get the best two out of the four individuals
 
 bestTwo = getBestTwo(parent1, parent2, child1, child2)
 print("\n\nBest 1: ")
@@ -135,9 +179,11 @@ print(bestTwo[0])
 print(bestTwo[0].fitness)
 print("\n\nBest 2: ")
 print(bestTwo[1])
-print(bestTwo[1].fitness)
+print(bestTwo[1].fitness) 
+
+"""
         
-    
+
 
 
 
