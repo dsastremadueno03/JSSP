@@ -23,9 +23,10 @@ tasksMachines = [
     [[1,3], [-1,-1], [2,2], [1,3], [2,4], [2,3], [1,2]] #Machine 2
 ]
 
+mutationProb = 75 # Probability in % to get a mutation in a child
 
 # Creation of the problem
-PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines) #FINAL
+PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines, mutationProb) #FINAL
 
 # FUNCTIONS
 # Creation of the individual

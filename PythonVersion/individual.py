@@ -1,6 +1,5 @@
 from schedule import Schedule
 from problem import Problem
-import matplotlib.pyplot as plt
 import random
 
 class Individual:
@@ -65,6 +64,27 @@ class Individual:
             self.energyCost += problem.getData(machine, task)[1] # Access to energy cost of specific case
         #TODO: ADD ENERGY CONSUMPTION TO IT
         self.fitness = max(self.schedule.endTimeTasks) # Calculate fitness 
+        
+    # Makes the child mutate (move one gene out of order)
+    def mutate(child):
+        gene = random.randint(0, len(child.tasksPermutation)-1)
+        # Check that it is in range (does not alter the order of priority)
+        job = child.tasksPermutation[gene]
+        # Limit of changing positions
+        limitMin = 0
+        limitMax = gene
+        for i in range(gene):
+            if child.tasksPermutation[i] == job:
+                limitMin = i
+            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
+                limitMax = i+gene
+            
+            
+        moveTo = random.randint(limitMin, limitMax)
+        while gene == moveTo:
+            moveTo = random.randint(0, len(child.tasksPermutation)-1)
+        child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
+        child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
             
     # Follows a job order crossover where self takes half or their jobs and the other half from the second parent
     def merge(self, individual2, problem):
@@ -106,6 +126,12 @@ class Individual:
                 j += 1
             
         child = Individual(newTasks, newMachines)
+        
+        # Should it mutate?
+        if random.randint(1, 100) <= problem.mutationProb:
+            print("Mutation detected!")
+            Individual.mutate(child)
+            
         child.genSchedule(problem)
         child.evaluate(problem)
         return child

@@ -1,7 +1,7 @@
 class Problem:    
 
 # Constructor for the problem with jobs, number of machines, energy prices and due dates
-    def __init__(self, jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines):
+    def __init__(self, jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines, mutationProb):
         self.jobTasks = jobTasks # Array of jobs
         self.nJobs = nJobs # Number of jobs
         self.nTasks = nTasks # Number of tasks
@@ -12,6 +12,8 @@ class Problem:
         # Matrix of Machine x Task that contains tuples of (duration, energy consumption) for each machine and task. 
         # No possible operation: (-1,-1)
         self.tasksMachines = tasksMachines 
+        
+        self.mutationProb = mutationProb
 
     def getData(self, machine, task):
         return self.tasksMachines[machine][task]
