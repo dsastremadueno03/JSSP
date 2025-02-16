@@ -83,12 +83,13 @@ class Individual:
             job = random.randint(0, problem.nJobs-1)
             while job in jobsForSelf:
                 job = random.randint(0, problem.nJobs-1) 
-            jobsForSelf.append(job)
-            
-        print(jobsForSelf)
+            jobsForSelf.append(job)   
+        
+        # Get indexes of the rest of the jobs from the second parent
         for i in range(problem.nTasks):
             if individual2.tasksPermutation[i] not in jobsForSelf:
                 jobsForSecond.append(i)
+
         
         # Copy the jobs from self in their position inside the child's arrays
         # First, we copy the tasks in self
@@ -97,12 +98,14 @@ class Individual:
                 newTasks[i] = self.tasksPermutation[i]  
                 newMachines[i] = self.machinePermutation[i]
         # Next, we complete the array with those from the second parent
+        j = 0 # index for second parent
         for i in range(problem.nTasks):
-            j = 0 # index for second parent
             if newTasks[i] == -1:
                 newTasks[i] = individual2.tasksPermutation[jobsForSecond[j]]
-                newMachines[i] = individual2.tasksPermutation[jobsForSecond[j]]
+                newMachines[i] = individual2.machinePermutation[jobsForSecond[j]]
                 j += 1
             
         child = Individual(newTasks, newMachines)
+        child.genSchedule(problem)
+        child.evaluate(problem)
         return child

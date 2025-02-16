@@ -51,51 +51,90 @@ def genIndividual(problem):
         while problem.getData(machine, totalJob + jobs[job]-1) == [-1,-1]: # As long as that machine can do the task
             machine = random.randint(0, problem.nMachines-1)
         machines.append(machine)
-    return Individual(tasks, machines)
+    individual = Individual(tasks, machines)
+    individual.genSchedule(PROBLEM)
+    individual.evaluate(PROBLEM)
+    return individual
 
+# Returns the best two individuals in a family of 2 parents and 2 children
+def getBestTwo(parent1, parent2, child1, child2):
+    result = [] # Stores the best two individuals
+    family = [] # Stores the individuals involved
+    family.append(parent1)
+    family.append(parent2)
+    family.append(child1)
+    family.append(child2)
+    fitness = [] # Stores the fitness of the individuals
+    fitness.append(parent1.fitness)
+    fitness.append(parent2.fitness)
+    fitness.append(child1.fitness)
+    fitness.append(child2.fitness)
+    for i in range(2):
+        index = fitness.index(min(fitness)) # Depends whether the fitness is better as a high or as a low value
+        result.append(family.pop(index))
+        fitness.pop(index)
+    return result
+    
+    
 
     
 
-
+##################
 ###    MAIN    ###
+##################
+
 
 # TEST 1 -> Generate two individuals
 parent1 = genIndividual(PROBLEM)
+print("\nParent 1")
 print(parent1)
-parent1.genSchedule(PROBLEM)
 print(parent1.schedule.startTimeTasks)
 print(parent1.schedule.endTimeTasks)
 #print(parent1.schedule.endTask)
 #print(parent1.schedule.endMachine)
-parent1.evaluate(PROBLEM)
 print("Fitness: " + str(parent1.fitness))
 print("DueDates: " + str(parent1.tardiness))
 print("Energy Consumption: " + str(parent1.energyCost))
-print("FIN")
 
 
 parent2 = genIndividual(PROBLEM)
+print("\nParent 2")
 print(parent2)
-parent2.genSchedule(PROBLEM)
 print(parent2.schedule.startTimeTasks)
 print(parent2.schedule.endTimeTasks)
 #print(parent2.schedule.endTask)
 #print(parent2.schedule.endMachine)
-parent2.evaluate(PROBLEM)
 print("Fitness: " + str(parent2.fitness))
 print("DueDates: " + str(parent2.tardiness))
 print("Energy Consumption: " + str(parent2.energyCost))
-print("FIN")
             
 
 # TEST 2 -> Generate two children 
 
 child1 = parent1.merge(parent2, PROBLEM)
+print("\nChild 1")
 print(child1)
+print("Fitness: " + str(child1.fitness))
+print("DueDates: " + str(child1.tardiness))
+print("Energy Consumption: " + str(child1.energyCost))
 child2 = parent2.merge(parent1, PROBLEM)
 while child2.tasksPermutation == child1.tasksPermutation:
     child2 = parent2.merge(parent1, PROBLEM)
+print("\nChild 2")
 print(child2) 
+print("Fitness: " + str(child2.fitness))
+print("DueDates: " + str(child2.tardiness))
+print("Energy Consumption: " + str(child2.energyCost))
+
+# TEST 3 -> Get the best two out of the four individuals
+
+bestTwo = getBestTwo(parent1, parent2, child1, child2)
+print("\n\nBest 1: ")
+print(bestTwo[0])
+print(bestTwo[0].fitness)
+print("\n\nBest 2: ")
+print(bestTwo[1])
+print(bestTwo[1].fitness)
         
     
 
