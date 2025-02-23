@@ -1,8 +1,9 @@
 from individual import Individual
 from problem import Problem
 from schedule import Schedule
+import matplotlib.pyplot as plt
 import random
-import time
+
 
 
 # EXAMPLE DATA
@@ -80,8 +81,12 @@ def getBestTwo(fam):
 ##################
 
 N_INDIVIDUALS = 20
+N_GENERATIONS = 20
 currentGeneration = []
 nextGeneration = []
+fitnessPlot = []
+
+plt.style.use('_mpl-gallery')
 
 # 1st -> Create initial pairs of individuals
 
@@ -92,13 +97,14 @@ for i in range(N_INDIVIDUALS//2):
 
 
 # Start genetic algorithm
-for i in range(20):
+for i in range(N_GENERATIONS):
     print("Generation " + str(i) + " in progress...")
     # 2nd -> Create children and evaluate
     for family in currentGeneration:
         family.append(family[0].merge(family[1], PROBLEM))
         family.append(family[1].merge(family[0], PROBLEM))
         best = getBestTwo(family)
+        
 
     # 3rd -> Add to new generation the best two per family
 
@@ -108,16 +114,33 @@ for i in range(20):
     # 4th -> Shuffle generation (different genes) and join in pairs again
     random.shuffle(nextGeneration)
     currentGeneration.clear()
-    for i in range(0, N_INDIVIDUALS//2, 2):
+    for i in range(0, N_INDIVIDUALS, 2):
         currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
+    nextGeneration.clear()
 
 # Show best individual obtained
-fitness = []
-for family in currentGeneration:
-    fitness.append(family[0].fitness)
-    fitness.append(family[1].fitness)
-minIndex = fitness.index(min(fitness))
-best = currentGeneration[minIndex//2][minIndex%2]
+    fitness = []
+    for family in currentGeneration:
+        fitness.append(family[0].fitness)
+        fitness.append(family[1].fitness)
+    minFitness = min(fitness)
+    print("Seleccionado: " + str(minFitness))
+    fitnessPlot.append(minFitness)
+    minIndex = fitness.index(minFitness)
+    
+# Plot of fitness evolution
+
+axisValue = []
+for i in range(N_GENERATIONS):
+    axisValue.append(int(i+1))
+
+fig, ax = plt.subplots()
+ax.plot(axisValue, fitnessPlot, 'o-', linewidth=2)
+ax.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessPlot)+2))
+plt.show()
+
+# Best individual data    
+best = currentGeneration[minIndex//2][minIndex%2] # Accessing from individuals array to paired array
 print(best)
 print(best.schedule.startTimeTasks)
 print(best.schedule.endTimeTasks)
