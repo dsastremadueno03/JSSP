@@ -80,7 +80,7 @@ def getBestTwo(fam):
 ###    MAIN    ###
 ##################
 
-N_INDIVIDUALS = 20
+N_INDIVIDUALS = 80
 N_GENERATIONS = 20
 currentGeneration = []
 nextGeneration = []
