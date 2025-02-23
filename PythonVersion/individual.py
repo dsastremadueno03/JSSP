@@ -91,14 +91,18 @@ class Individual:
                 pasEnergyPrice += problem.energyPrices[j] * problem.passiveEnergy[i]
         return pasEnergyPrice
          
-        
-    
     # Calculates the energy consumption     
     def updateTotalEnergyConsumptionPrice(self, problem):
         actEnergyPrice = self.calcActiveEnergyPrice(problem)
         pasEnergyPrice = self.calcPassiveEnergyPrice(problem)
         self.energyCost = actEnergyPrice + pasEnergyPrice
     
+    # Calculates the fitness of the individual
+    # Logic is that time is the most important one
+    # so energy cost will only mark the difference if same time
+    def calcFitness(self):
+        return max(self.schedule.endTimeTasks) + self.energyCost * 0.000001
+        
     # Evaluates the tardiness, energy consumption and fitness of the individual
     def evaluate(self, problem):
         # Evaluates the tardiness of jobs
@@ -106,7 +110,7 @@ class Individual:
         # Evaluates the total energy consumption
         self.updateTotalEnergyConsumptionPrice(problem)
         # Calculates fitness (using comparison function)
-        self.fitness = max(self.schedule.endTimeTasks) # Calculate fitness 
+        self.fitness = self.calcFitness() # Calculate fitness 
         
     # Makes the child mutate (move one gene out of order)
     def mutate(child):

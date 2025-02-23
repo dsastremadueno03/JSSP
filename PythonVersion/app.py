@@ -61,17 +61,24 @@ def genIndividual(problem):
     return individual
 
 # Returns the best two individuals in a family of 2 parents and 2 children
-def getBestTwo(fam):
+# MODES -> 0: Minimize; 1: Maximize
+def getBestTwo(fam, mode):
     result = [] # Stores the best two individuals
     fitness = [] # Stores the fitness of the individuals
     fitness.append(fam[0].fitness)
     fitness.append(fam[1].fitness)
     fitness.append(fam[2].fitness)
     fitness.append(fam[3].fitness)
-    for i in range(2):
-        index = fitness.index(min(fitness)) # Depends whether the fitness is better as a high or as a low value
-        result.append(fam.pop(index))
-        fitness.pop(index)
+    if mode == 0:
+        for i in range(2):
+            index = fitness.index(min(fitness)) # Depends whether the fitness is better as a high or as a low value
+            result.append(fam.pop(index))
+            fitness.pop(index)
+    if mode == 1:
+        for i in range(2):
+            index = fitness.index(max(fitness)) # Depends whether the fitness is better as a high or as a low value
+            result.append(fam.pop(index))
+            fitness.pop(index)
     return result
     
     
@@ -105,7 +112,7 @@ for i in range(N_GENERATIONS):
     for family in currentGeneration:
         family.append(family[0].merge(family[1], PROBLEM))
         family.append(family[1].merge(family[0], PROBLEM))
-        best = getBestTwo(family)
+        best = getBestTwo(family, 0) # Minimize
         
 
     # 3rd -> Add to new generation the best two per family
@@ -139,6 +146,10 @@ for i in range(N_GENERATIONS):
 fig, ax = plt.subplots()
 ax.plot(axisValue, fitnessPlot, 'o-', linewidth=2)
 ax.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessPlot)+2))
+plt.xlabel('Generation')
+plt.ylabel('Fitness')
+plt.title('Evolution of fitness')
+plt.subplots_adjust(top=0.85, bottom=0.12, right=0.85, left=0.12, hspace=0.25, wspace=0.35)
 plt.show()
 
 # Best individual data    
