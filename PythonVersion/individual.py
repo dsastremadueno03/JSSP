@@ -54,7 +54,7 @@ class Individual:
                 self.tardiness.append(late)
     
     # Calculates the cost of the active energy of the individual
-    def calcActiveEnergy(self, problem):
+    def calcActiveEnergyPrice(self, problem):
         jobTasks = []
         actEnergyPrice = 0
         for i in range(problem.nJobs):
@@ -63,29 +63,49 @@ class Individual:
             job = self.tasksPermutation[i]
             machine = self.machinePermutation[i]
             task = self.getTask(problem, job, jobTasks)
-            consumption = problem.getData(machine, task)[1] # Access to energy cost of task in the specific machine
+            # Energy consumed
+            consumption = problem.getData(machine, task)[1] # Access to energy cost of doing the task in a specific machine
+            
+            # Time of use
             startTime = self.schedule.startTimeTasks[i] 
             endTime = self.schedule.endTimeTasks[i]
-            # Calculates in the range of time in the schedule the price of the active energy consumed
+            # Calculates with the range of time in the schedule the price of the active energy consumed
             for j in range(startTime, endTime): 
-                actEnergyPrice += problem.energyPrices[j] * consumption
+                actEnergyPrice += problem.energyPrices[j] * consumption # Multiply hour price by the amount of energy consumed 
         
         # Returns the price of the active energy of the individual
         return actEnergyPrice
         
+        # ASUMING: 
+        # - Passive energy starts when first use of machine. 
+        # - Passive energy ends when machine finishes.
+        # - Passive energy is independent of active energy.
+        
+        # Calculates the cost of passive energy of the individual
+    def calcPassiveEnergyPrice(self, problem):
+        pasEnergyPrice = 0
+        # For every machine, get its functional time to get the prices 
+        # and multiply it by the machine passive energy consumption
+        for i in range(problem.nMachines):
+            for j in range(self.schedule.startMachine[i], self.schedule.endMachine[i]):
+                pasEnergyPrice += problem.energyPrices[j] * problem.passiveEnergy[i]
+        return pasEnergyPrice
+         
+        
     
     # Calculates the energy consumption     
-    def updateTotalEnergyConsumption(self, problem):
-        
-        actEnergy = self.calcActiveEnergy(problem)
+    def updateTotalEnergyConsumptionPrice(self, problem):
+        actEnergyPrice = self.calcActiveEnergyPrice(problem)
+        pasEnergyPrice = self.calcPassiveEnergyPrice(problem)
+        self.energyCost = actEnergyPrice + pasEnergyPrice
     
     # Evaluates the tardiness, energy consumption and fitness of the individual
     def evaluate(self, problem):
         # Evaluates the tardiness of jobs
         self.updateTardiness(problem)
         # Evaluates the total energy consumption
-        self.updateTotalEnergyConsumption(problem)
-        #TODO: ADD ENERGY CONSUMPTION TO IT
+        self.updateTotalEnergyConsumptionPrice(problem)
+        # Calculates fitness (using comparison function)
         self.fitness = max(self.schedule.endTimeTasks) # Calculate fitness 
         
     # Makes the child mutate (move one gene out of order)
