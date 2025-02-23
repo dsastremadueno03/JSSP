@@ -44,24 +44,47 @@ class Individual:
             self.schedule.updateSchedule(job, machine, task, problem)
         #print("Schedule has been generated correctly!")
         
-    # Evaluates the tardiness, energy consumption and fitness of the individual
-    def evaluate(self, problem):
-        # Evaluates the tardiness of jobs
+    # Calculates the tardiness array of the individual
+    def updateTardiness(self, problem):
         for i in range(problem.nJobs):
             late = self.schedule.endTask[i] - problem.dueDates[i] 
             if late < 0:
-                self.tardiness.append(0)
+                self.tardiness.append(0) # Tardiness cannot be negative
             else:
                 self.tardiness.append(late)
-        # Evaluates the total energy consumption
+    
+    # Calculates the cost of the active energy of the individual
+    def calcActiveEnergy(self, problem):
         jobTasks = []
+        actEnergyPrice = 0
         for i in range(problem.nJobs):
             jobTasks.append(0)
         for i in range(problem.nTasks):
             job = self.tasksPermutation[i]
             machine = self.machinePermutation[i]
             task = self.getTask(problem, job, jobTasks)
-            self.energyCost += problem.getData(machine, task)[1] # Access to energy cost of specific case
+            consumption = problem.getData(machine, task)[1] # Access to energy cost of task in the specific machine
+            startTime = self.schedule.startTimeTasks[i] 
+            endTime = self.schedule.endTimeTasks[i]
+            # Calculates in the range of time in the schedule the price of the active energy consumed
+            for j in range(startTime, endTime): 
+                actEnergyPrice += problem.energyPrices[j] * consumption
+        
+        # Returns the price of the active energy of the individual
+        return actEnergyPrice
+        
+    
+    # Calculates the energy consumption     
+    def updateTotalEnergyConsumption(self, problem):
+        
+        actEnergy = self.calcActiveEnergy(problem)
+    
+    # Evaluates the tardiness, energy consumption and fitness of the individual
+    def evaluate(self, problem):
+        # Evaluates the tardiness of jobs
+        self.updateTardiness(problem)
+        # Evaluates the total energy consumption
+        self.updateTotalEnergyConsumption(problem)
         #TODO: ADD ENERGY CONSUMPTION TO IT
         self.fitness = max(self.schedule.endTimeTasks) # Calculate fitness 
         

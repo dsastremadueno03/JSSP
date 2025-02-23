@@ -16,7 +16,9 @@ jobTasks = [2, 3, 2] # Number of tasks for each job
 energyPrices = [3, 2, 1, 1, 1, 2, 3, 4, 5, 5, 6, 6, 7, 8, 8, 7, 6, 5, 4, 6, 7, 7, 6, 4] # Energy prices for each hour
 dueDates = [6, 5, 6] # Due dates for each job (in hours)
 
-# Matrix of Machine x Task that contains tuples of (duration, energy consumption) for each machine and task. 
+passiveEnergy = [30, 20, 25] # Passive energy consumption of each machine (from its initial use until the end of the program)
+
+# Matrix of Machine x Task that contains tuples of (duration, active energy consumption) for each machine and task. 
 # No possible operation: (-1,-1)
 tasksMachines = [
     [[2,1], [1,1], [2,3], [-1,-1], [3,3], [1,2], [2,3]], #Machine 0
@@ -27,7 +29,7 @@ tasksMachines = [
 mutationProb = 5 # Probability in % to get a mutation in a child
 
 # Creation of the problem
-PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines, mutationProb) #FINAL
+PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
 
 # FUNCTIONS
 # Creation of the individual

@@ -1,12 +1,13 @@
 class Problem:    
 
 # Constructor for the problem with jobs, number of machines, energy prices and due dates
-    def __init__(self, jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, tasksMachines, mutationProb):
+    def __init__(self, jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb):
         self.jobTasks = jobTasks # Array of jobs
         self.nJobs = nJobs # Number of jobs
         self.nTasks = nTasks # Number of tasks
         self.nMachines = nMachines # Number of machines
         self.energyPrices = energyPrices # Array of energy prices for each hour
+        self.passiveEnergy = passiveEnergy # Array of the passive energy consumption of each machine
         self.dueDates = dueDates # Array of due dates for each job
 
         # Matrix of Machine x Task that contains tuples of (duration, energy consumption) for each machine and task. 
@@ -15,6 +16,7 @@ class Problem:
         
         self.mutationProb = mutationProb
 
+# Retrieve data from tasksMachines matrix
     def getData(self, machine, task):
         return self.tasksMachines[machine][task]
         
