@@ -125,8 +125,11 @@ class Individual:
         for i in range(gene):
             if child.tasksPermutation[i] == job:
                 limitMin = i + 1
+                break
+        for i in range(gene):
             if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
                 limitMax = i+gene
+                break
             
             
         moveTo = random.randint(limitMin, limitMax)

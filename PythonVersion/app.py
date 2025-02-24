@@ -26,7 +26,7 @@ tasksMachines = [
     [[1,30], [-1,-1], [2,40], [1,50], [2,40], [2,30], [1,40]] #Machine 2
 ]
 
-mutationProb = 0 # Probability in % to get a mutation in a child
+mutationProb = 10 # Probability in % to get a mutation in a child
 
 # Creation of the problem
 PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
@@ -89,7 +89,7 @@ def getBestTwo(fam, mode):
 ###    MAIN    ###
 ##################
 
-N_INDIVIDUALS = 8
+N_INDIVIDUALS = 12
 N_GENERATIONS = 10
 currentGeneration = []
 nextGeneration = []
