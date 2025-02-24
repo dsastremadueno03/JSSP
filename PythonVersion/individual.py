@@ -114,6 +114,8 @@ class Individual:
         
     # Makes the child mutate (move one gene out of order)
     def mutate(child):
+        print("Mutates: ")
+        print(child)
         gene = random.randint(0, len(child.tasksPermutation)-1)
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
@@ -122,7 +124,7 @@ class Individual:
         limitMax = gene
         for i in range(gene):
             if child.tasksPermutation[i] == job:
-                limitMin = i
+                limitMin = i + 1
             if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
                 limitMax = i+gene
             
@@ -132,6 +134,9 @@ class Individual:
             moveTo = random.randint(0, len(child.tasksPermutation)-1)
         child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
         child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
+        
+        print("mutated:")
+        print(child)
             
     # Follows a job order crossover where self takes half or their jobs and the other half from the second parent
     def merge(self, individual2, problem):
@@ -176,7 +181,6 @@ class Individual:
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
-            print("Mutation detected!")
             Individual.mutate(child)
             
         child.genSchedule(problem)

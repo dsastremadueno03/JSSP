@@ -21,12 +21,12 @@ passiveEnergy = [30, 20, 25] # Passive energy consumption of each machine (from 
 # Matrix of Machine x Task that contains tuples of (duration, active energy consumption) for each machine and task. 
 # No possible operation: (-1,-1)
 tasksMachines = [
-    [[2,1], [1,1], [2,3], [-1,-1], [3,3], [1,2], [2,3]], #Machine 0
-    [[3,3], [-1,-1], [2,1], [2,2], [-1,-1], [1,1], [1,1]], #Machine 1
-    [[1,3], [-1,-1], [2,2], [1,3], [2,4], [2,3], [1,2]] #Machine 2
+    [[2,60], [1,40], [2,50], [-1,-1], [3,70], [1,60], [2,70]], #Machine 0
+    [[3,30], [-1,-1], [2,40], [2,60], [-1,-1], [1,50], [1,40]], #Machine 1
+    [[1,30], [-1,-1], [2,40], [1,50], [2,40], [2,30], [1,40]] #Machine 2
 ]
 
-mutationProb = 5 # Probability in % to get a mutation in a child
+mutationProb = 0 # Probability in % to get a mutation in a child
 
 # Creation of the problem
 PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
@@ -89,8 +89,8 @@ def getBestTwo(fam, mode):
 ###    MAIN    ###
 ##################
 
-N_INDIVIDUALS = 80
-N_GENERATIONS = 20
+N_INDIVIDUALS = 8
+N_GENERATIONS = 10
 currentGeneration = []
 nextGeneration = []
 fitnessPlot = []
