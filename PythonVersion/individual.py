@@ -9,7 +9,7 @@ class Individual:
         self.machinePermutation = machinePermutation
         self.tardiness = []
         self.energyCost = 0
-        self.fitness = 0
+        self.fitness = []
         self.schedule = None
 
     def __str__(self):
@@ -45,14 +45,18 @@ class Individual:
         #print("Schedule has been generated correctly!")
         
     # Calculates the tardiness array of the individual
+    # Returns the total tardiness (sum of all tardiness)
     def updateTardiness(self, problem):
+        totalTardiness = 0
         for i in range(problem.nJobs):
             late = self.schedule.endTask[i] - problem.dueDates[i] 
             if late < 0:
                 self.tardiness.append(0) # Tardiness cannot be negative
             else:
                 self.tardiness.append(late)
-    
+                totalTardiness += late
+        return totalTardiness
+
     # Calculates the cost of the active energy of the individual
     def calcActiveEnergyPrice(self, problem):
         jobTasks = []
@@ -96,21 +100,16 @@ class Individual:
         actEnergyPrice = self.calcActiveEnergyPrice(problem)
         pasEnergyPrice = self.calcPassiveEnergyPrice(problem)
         self.energyCost = actEnergyPrice + pasEnergyPrice
-    
-    # Calculates the fitness of the individual
-    # Logic is that time is the most important one
-    # so energy cost will only mark the difference if same time
-    def calcFitness(self):
-        return max(self.schedule.endTimeTasks) + self.energyCost * 0.000001
+        return self.energyCost
         
     # Evaluates the tardiness, energy consumption and fitness of the individual
     def evaluate(self, problem):
         # Evaluates the tardiness of jobs
-        self.updateTardiness(problem)
+        totalTardiness = self.updateTardiness(problem)
         # Evaluates the total energy consumption
-        self.updateTotalEnergyConsumptionPrice(problem)
+        totalEnergyCost = self.updateTotalEnergyConsumptionPrice(problem)
         # Calculates fitness (using comparison function)
-        self.fitness = self.calcFitness() # Calculate fitness 
+        self.fitness = [totalTardiness, totalEnergyCost] # Fitness is composed of the tardiness and the energy cost (Multiobjective)
         
     # Makes the child mutate (move one gene out of order)
     def mutate(child):

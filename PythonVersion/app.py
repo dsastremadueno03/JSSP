@@ -14,7 +14,7 @@ nMachines = 3 # Total number of machines
 jobTasks = [2, 3, 2] # Number of tasks for each job
 
 energyPrices = [3, 2, 1, 1, 1, 2, 3, 4, 5, 5, 6, 6, 7, 8, 8, 7, 6, 5, 4, 6, 7, 7, 6, 4] # Energy prices for each hour
-dueDates = [6, 5, 6] # Due dates for each job (in hours)
+dueDates = [2, 3, 1] # Due dates for each job (in hours)
 
 passiveEnergy = [30, 20, 25] # Passive energy consumption of each machine (from its initial use until the end of the program)
 
@@ -26,7 +26,7 @@ tasksMachines = [
     [[1,30], [-1,-1], [2,40], [1,50], [2,40], [2,30], [1,40]] #Machine 2
 ]
 
-mutationProb = 100 # Probability in % to get a mutation in a child
+mutationProb = 10 # Probability in % to get a mutation in a child
 
 # Creation of the problem
 PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
@@ -63,27 +63,12 @@ def genIndividual(problem):
 # Returns the best two individuals in a family of 2 parents and 2 children
 # MODES -> 0: Minimize; 1: Maximize
 def getBestTwo(fam, mode):
-    result = [] # Stores the best two individuals
-    fitness = [] # Stores the fitness of the individuals
-    fitness.append(fam[0].fitness)
-    fitness.append(fam[1].fitness)
-    fitness.append(fam[2].fitness)
-    fitness.append(fam[3].fitness)
-    if mode == 0:
-        for i in range(2):
-            index = fitness.index(min(fitness)) # Depends whether the fitness is better as a high or as a low value
-            result.append(fam.pop(index))
-            fitness.pop(index)
-    if mode == 1:
-        for i in range(2):
-            index = fitness.index(max(fitness)) # Depends whether the fitness is better as a high or as a low value
-            result.append(fam.pop(index))
-            fitness.pop(index)
+    # Lambda funtion that sorts by the time attribute first, and then by the energy. 
+    fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=mode)
+    result = fam[:2] # Take the best two
     return result
     
-    
 
-    
 
 ##################
 ###    MAIN    ###
@@ -93,7 +78,11 @@ N_INDIVIDUALS = 20
 N_GENERATIONS = 20
 currentGeneration = []
 nextGeneration = []
-fitnessPlot = []
+fitnessTimePlot = []
+fitnessEnergyPlot = []
+
+# MODE -> 0: Minimize; 1: Maximize
+mode = 0
 
 plt.style.use('_mpl-gallery')
 
@@ -127,15 +116,22 @@ for i in range(N_GENERATIONS):
         currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
     nextGeneration.clear()
 
-# Show best individual obtained
-    fitness = []
+# Show best individual obtained by tardiness and energy cost separately
+    fitnessTime = []
+    fitnessEnergy = []
     for family in currentGeneration:
-        fitness.append(family[0].fitness)
-        fitness.append(family[1].fitness)
-    minFitness = min(fitness)
-    print("Seleccionado: " + str(minFitness))
-    fitnessPlot.append(minFitness)
-    minIndex = fitness.index(minFitness)
+        fitnessTime.append(int(family[0].fitness[0]))
+        fitnessTime.append(int(family[1].fitness[0]))
+        fitnessEnergy.append(float(family[0].fitness[1]))
+        fitnessEnergy.append(float(family[1].fitness[1]))
+    minTimeFitness = min(fitnessTime)
+    minEnergyFitness = min(fitnessEnergy)
+    fitnessTimePlot.append(minTimeFitness)
+    fitnessEnergyPlot.append(minEnergyFitness)
+    minTimeIndex = fitnessTime.index(minTimeFitness)
+    minEnergyIndex = fitnessEnergy.index(minEnergyFitness)
+    
+
     
 # Plot of fitness evolution
 
@@ -143,22 +139,37 @@ axisValue = []
 for i in range(N_GENERATIONS):
     axisValue.append(int(i+1))
 
-fig, ax = plt.subplots()
-ax.plot(axisValue, fitnessPlot, 'o-', linewidth=2)
-ax.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessPlot)+2))
+fig, axTime = plt.subplots()
+axTime.plot(axisValue, fitnessTimePlot, 'o-', linewidth=2)
+axTime.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
 plt.xlabel('Generation')
-plt.ylabel('Fitness')
-plt.title('Evolution of fitness')
+plt.ylabel('Tardiness (h)')
+plt.title('Evolution of tardiness')
+plt.subplots_adjust(top=0.85, bottom=0.12, right=0.85, left=0.12, hspace=0.25, wspace=0.35)
+plt.show()
+
+fig, axEnergy = plt.subplots()
+axEnergy.plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2)
+axEnergy.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
+plt.xlabel('Generation')
+plt.ylabel('Energy Cost (€)')
+plt.title('Evolution of energy cost')
 plt.subplots_adjust(top=0.85, bottom=0.12, right=0.85, left=0.12, hspace=0.25, wspace=0.35)
 plt.show()
 
 # Best individual data    
-best = currentGeneration[minIndex//2][minIndex%2] # Accessing from individuals array to paired array
+lastGeneration = [] # Stores individuals out of the pairs
+for pair in currentGeneration:
+    for individual in pair:
+        lastGeneration.append(individual)
+lastGeneration.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=mode) # Sorting to obtain the best individual
+best = lastGeneration[0]
+print("BEST:")
 print(best)
 print(best.schedule.startTimeTasks)
 print(best.schedule.endTimeTasks)
-print("Fitness: " + str(best.fitness))
-print("Energy Consumption: " + str(best.energyCost))
+print("Tardiness: " + str(best.fitness[0]))
+print("Energy Consumption: " + str(best.fitness[1]))
     
 
 
