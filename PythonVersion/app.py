@@ -139,22 +139,20 @@ axisValue = []
 for i in range(N_GENERATIONS):
     axisValue.append(int(i+1))
 
-fig, axTime = plt.subplots()
-axTime.plot(axisValue, fitnessTimePlot, 'o-', linewidth=2)
-axTime.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
-plt.xlabel('Generation')
-plt.ylabel('Tardiness (h)')
-plt.title('Evolution of tardiness')
-plt.subplots_adjust(top=0.85, bottom=0.12, right=0.85, left=0.12, hspace=0.25, wspace=0.35)
-plt.show()
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
+ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
+ax[0].set_xlabel('Generation')
+ax[0].set_ylabel('Tardiness (h)')
+ax[0].set_title('Evolution of tardiness')
 
-fig, axEnergy = plt.subplots()
-axEnergy.plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2)
-axEnergy.set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
-plt.xlabel('Generation')
-plt.ylabel('Energy Cost (€)')
-plt.title('Evolution of energy cost')
-plt.subplots_adjust(top=0.85, bottom=0.12, right=0.85, left=0.12, hspace=0.25, wspace=0.35)
+ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
+ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
+ax[1].set_xlabel('Generation')
+ax[1].set_ylabel('Energy Cost (€)')
+ax[1].set_title('Evolution of energy cost')
+
+plt.tight_layout()
 plt.show()
 
 # Best individual data    
