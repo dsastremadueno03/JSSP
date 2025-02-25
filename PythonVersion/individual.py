@@ -122,19 +122,16 @@ class Individual:
         # Limit of changing positions
         limitMin = 0
         limitMax = gene
-        for i in range(gene):
+        for i in range(gene+1):
             if child.tasksPermutation[i] == job:
-                limitMin = i + 1
-                break
-        for i in range(gene):
+                limitMin = i
+        for i in range(gene+1):
             if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
                 limitMax = i+gene
                 break
             
             
         moveTo = random.randint(limitMin, limitMax)
-        while gene == moveTo:
-            moveTo = random.randint(0, len(child.tasksPermutation)-1)
         child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
         child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
         

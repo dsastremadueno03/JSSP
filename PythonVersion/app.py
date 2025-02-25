@@ -26,7 +26,7 @@ tasksMachines = [
     [[1,30], [-1,-1], [2,40], [1,50], [2,40], [2,30], [1,40]] #Machine 2
 ]
 
-mutationProb = 10 # Probability in % to get a mutation in a child
+mutationProb = 100 # Probability in % to get a mutation in a child
 
 # Creation of the problem
 PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
@@ -89,8 +89,8 @@ def getBestTwo(fam, mode):
 ###    MAIN    ###
 ##################
 
-N_INDIVIDUALS = 12
-N_GENERATIONS = 10
+N_INDIVIDUALS = 20
+N_GENERATIONS = 20
 currentGeneration = []
 nextGeneration = []
 fitnessPlot = []
@@ -217,6 +217,10 @@ print("\n\nBest 2: ")
 print(bestTwo[1])
 print(bestTwo[1].fitness) 
 
+# TEST 1.4 -> Mutation problem
+
+Setting mutation prob. to 100% with a moderate population (20 individuals/gen.)
+Checking if schedule does not reduce time. (Adding -1 from matrix)
 """
         
 
