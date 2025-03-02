@@ -5,9 +5,9 @@ import random
 class Individual:
 
     def __init__(self, taskPermutation, machinePermutation, idPermutation):
-        self.tasksPermutation = taskPermutation
-        self.machinePermutation = machinePermutation
-        self.idPermutation = idPermutation
+        self.tasksPermutation = taskPermutation # Stores the tasks (as jobs) in the order they are done
+        self.machinePermutation = machinePermutation # Stores the machine in which the task is done
+        self.idPermutation = idPermutation # Stores the id of the tasks in the whole problem
         self.tardiness = []
         self.energyCost = 0
         self.fitness = []
@@ -16,32 +16,17 @@ class Individual:
     def __str__(self):
         return str(self.tasksPermutation) + "\n" + str(self.machinePermutation)
     
-    # Gets the task id (inferred by how many times the job appears)
-    # job -> job id
-    # jobTasks -> array with number of appearences of each job
-    def getTask(self, problem, job, jobTasks):
-        totalJob = 0
-        for i in range(job):
-            totalJob += problem.jobTasks[i] # Add the previous tasks to get to the initial pos for the job in the array
-        taskPosition = totalJob + jobTasks[job]
-        jobTasks[job] += 1
-        return taskPosition
-    
     # Generates a schedule based on the individual
     def genSchedule(self, problem):
         if len(self.tasksPermutation) != problem.nTasks or len(self.machinePermutation) != problem.nTasks: # If individual has no data
             return None
         # Create schedule
         self.schedule = Schedule(problem.nMachines, problem.nJobs, problem.nTasks)
-        jobTasks = [] # Keep track of how many times a job's task has been made
-        for i in range(problem.nJobs):
-            jobTasks.append(0)
         # Go through the task permutation and the machine permutation
         for i in range(problem.nTasks):
             job = self.tasksPermutation[i]
             machine = self.machinePermutation[i]
-            # Calculate the postition of the task in the array
-            task = self.getTask(problem, job, jobTasks)
+            task = self.idPermutation[i]
             self.schedule.updateSchedule(job, machine, task, problem)
         #print("Schedule has been generated correctly!")
         
@@ -60,17 +45,12 @@ class Individual:
 
     # Calculates the cost of the active energy of the individual
     def calcActiveEnergyPrice(self, problem):
-        jobTasks = []
         actEnergyPrice = 0
-        for i in range(problem.nJobs):
-            jobTasks.append(0)
         for i in range(problem.nTasks):
-            job = self.tasksPermutation[i]
             machine = self.machinePermutation[i]
-            task = self.getTask(problem, job, jobTasks)
+            task = self.idPermutation[i]
             # Energy consumed
             consumption = problem.getData(machine, task)[1] # Access to energy cost of doing the task in a specific machine
-            
             # Time of use
             startTime = self.schedule.startTimeTasks[i] 
             endTime = self.schedule.endTimeTasks[i]
@@ -134,6 +114,7 @@ class Individual:
         moveTo = random.randint(limitMin, limitMax)
         child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
         child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
+        child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
         
         print("mutated:")
         print(child)
@@ -143,9 +124,11 @@ class Individual:
         # Prepare matrices to save data
         newTasks = []
         newMachines = []
+        newIds = []
         for i in range(problem.nTasks):
             newTasks.append(-1)
             newMachines.append(-1)
+            newIds.append(-1)
         
             
         # Select which jobs to take from self
@@ -169,15 +152,17 @@ class Individual:
             if self.tasksPermutation[i] in jobsForSelf:
                 newTasks[i] = self.tasksPermutation[i]  
                 newMachines[i] = self.machinePermutation[i]
+                newIds[i] = self.idPermutation[i]
         # Next, we complete the array with those from the second parent
         j = 0 # index for second parent
         for i in range(problem.nTasks):
             if newTasks[i] == -1:
                 newTasks[i] = individual2.tasksPermutation[jobsForSecond[j]]
                 newMachines[i] = individual2.machinePermutation[jobsForSecond[j]]
+                newIds[i] = individual2.idPermutation[jobsForSecond[j]]
                 j += 1
             
-        child = Individual(newTasks, newMachines)
+        child = Individual(newTasks, newMachines, newIds)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
