@@ -4,9 +4,10 @@ import random
 
 class Individual:
 
-    def __init__(self, taskPermutation, machinePermutation):
+    def __init__(self, taskPermutation, machinePermutation, idPermutation):
         self.tasksPermutation = taskPermutation
         self.machinePermutation = machinePermutation
+        self.idPermutation = idPermutation
         self.tardiness = []
         self.energyCost = 0
         self.fitness = []

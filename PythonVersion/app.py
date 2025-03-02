@@ -40,6 +40,7 @@ def genIndividual(problem):
         jobs.append(0)
     tasks = []
     machines = []
+    ids = []
     for i in range(problem.nTasks):
         # Choose job to do task from
         job = random.randint(0, problem.nJobs-1)
@@ -52,10 +53,12 @@ def genIndividual(problem):
         totalJob = 0
         for j in range(job):
             totalJob += problem.jobTasks[j]
-        while problem.getData(machine, totalJob + jobs[job]-1) == [-1,-1]: # As long as that machine can do the task
+        taskId = totalJob + jobs[job]-1
+        while problem.getData(machine, taskId) == [-1,-1]: # As long as that machine can do the task
             machine = random.randint(0, problem.nMachines-1)
         machines.append(machine)
-    individual = Individual(tasks, machines)
+        ids.append(taskId)
+    individual = Individual(tasks, machines, ids)
     individual.genSchedule(PROBLEM)
     individual.evaluate(PROBLEM)
     return individual
