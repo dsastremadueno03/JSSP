@@ -176,6 +176,9 @@ machine_labels = []
 tasks = []
 start_times = []
 
+for i in range(nMachines):
+    y_pos.append(i)
+
 for task in range(PROBLEM.nTasks):
     if best.schedule.startTimeTasks[task] != -1:
         start = best.schedule.startTimeTasks[task]
@@ -185,19 +188,25 @@ for task in range(PROBLEM.nTasks):
         start_times.append(start)
         durations.append(duration)
         tasks.append(f"T{task}")  # Task tag
-        y_pos.append(task)
-        machine_labels.append(best.machinePermutation[task])  # Assigned machine
+        indexMachine = best.idPermutation.index(task)
+        machine_labels.append(best.machinePermutation[indexMachine])  # Assigned machine
 
-# Plot horizontal bars
 for i in range(PROBLEM.nTasks):
-    ax[2].barh(y_pos[i], durations[i], left=start_times[i], color=colors(machine_labels[i] % nMachines), edgecolor="black")
-    ax[2].text(start_times[i] + durations[i] / 2, y_pos[i], tasks[i], va="center", ha="center", color="white")
+    ax[2].barh(machine_labels[i], durations[i], left=start_times[i], 
+                color=colors(machine_labels[i] % nMachines), edgecolor="black")
+    
+    # Label each task in the middle of the bar
+    ax[2].text(start_times[i] + durations[i] / 2, machine_labels[i], tasks[i], 
+               va="center", ha="center", color="white")
 
 # Setting plot info
 ax[2].set_xlabel("Time (h)")
 ax[2].set_ylabel("Machines")
-ax[2].set_yticks(range(nMachines))
-ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
+
+# Ensure only the 3 machines appear on the y-axis
+ax[2].set_yticks(range(nMachines))  
+ax[2].set_yticklabels([f"M{i}" for i in range(nMachines)])
+
 ax[2].set_title("Best Found Schedule")
 ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 
