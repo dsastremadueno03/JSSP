@@ -67,7 +67,7 @@ def genIndividual(problem):
 # MODES -> 0: Minimize; 1: Maximize
 def getBestTwo(fam, mode):
     # Lambda funtion that sorts by the time attribute first, and then by the energy. 
-    fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=mode)
+    fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=(mode == 1))
     result = fam[:2] # Take the best two
     return result
     
@@ -121,42 +121,17 @@ for i in range(N_GENERATIONS):
 
 # Show best individual obtained by tardiness and energy cost separately
     fitnessTime = []
-    fitnessEnergy = []
     for family in currentGeneration:
-        fitnessTime.append(int(family[0].fitness[0]))
-        fitnessTime.append(int(family[1].fitness[0]))
-        fitnessEnergy.append(float(family[0].fitness[1]))
-        fitnessEnergy.append(float(family[1].fitness[1]))
-    minTimeFitness = min(fitnessTime)
-    minEnergyFitness = min(fitnessEnergy)
+        fitnessTime.append(family[0].fitness)
+        fitnessTime.append(family[1].fitness)
+    # Calculate the minimum tardiness
+    minTimeFitness = min(fitnessTime, key = lambda x: x[0])[0]
+    # Get the individuals with the minimal tardiness
+    candidates = [x for x in fitnessTime if x[0] == minTimeFitness]
+    # Get the minimal energy consumption of the candidates
+    minEnergyFitness = min(candidates, key = lambda x: x[1])[1]
     fitnessTimePlot.append(minTimeFitness)
     fitnessEnergyPlot.append(minEnergyFitness)
-    minTimeIndex = fitnessTime.index(minTimeFitness)
-    minEnergyIndex = fitnessEnergy.index(minEnergyFitness)
-    
-
-    
-# Plot of fitness evolution
-
-axisValue = []
-for i in range(N_GENERATIONS):
-    axisValue.append(int(i+1))
-
-fig, ax = plt.subplots(1, 2, figsize=(10, 5))
-ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
-ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
-ax[0].set_xlabel('Generation')
-ax[0].set_ylabel('Tardiness (h)')
-ax[0].set_title('Evolution of tardiness')
-
-ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
-ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
-ax[1].set_xlabel('Generation')
-ax[1].set_ylabel('Energy Cost (€)')
-ax[1].set_title('Evolution of energy cost')
-
-plt.tight_layout()
-plt.show()
 
 # Best individual data    
 lastGeneration = [] # Stores individuals out of the pairs
@@ -172,6 +147,62 @@ print(best.schedule.endTimeTasks)
 print("Tardiness: " + str(best.fitness[0]))
 print("Energy Consumption: " + str(best.fitness[1]))
     
+
+# Plot of fitness evolution
+
+axisValue = []
+for i in range(N_GENERATIONS):
+    axisValue.append(int(i+1))
+
+fig, ax = plt.subplots(1, 3, figsize=(10, 6))
+colors = plt.cm.get_cmap("tab10", nMachines)
+ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
+ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
+ax[0].set_xlabel('Generation')
+ax[0].set_ylabel('Tardiness (h)')
+ax[0].set_title('Evolution of tardiness')
+
+ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
+ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
+ax[1].set_xlabel('Generation')
+ax[1].set_ylabel('Energy Cost (€)')
+ax[1].set_title('Evolution of energy cost')
+
+# Plot of schedule
+
+y_pos = []
+durations = []
+machine_labels = []
+tasks = []
+start_times = []
+
+for task in range(PROBLEM.nTasks):
+    if best.schedule.startTimeTasks[task] != -1:
+        start = best.schedule.startTimeTasks[task]
+        end = best.schedule.endTimeTasks[task]
+        duration = end - start
+
+        start_times.append(start)
+        durations.append(duration)
+        tasks.append(f"T{task}")  # Task tag
+        y_pos.append(task)
+        machine_labels.append(best.machinePermutation[task])  # Assigned machine
+
+# Plot horizontal bars
+for i in range(PROBLEM.nTasks):
+    ax[2].barh(y_pos[i], durations[i], left=start_times[i], color=colors(machine_labels[i] % nMachines), edgecolor="black")
+    ax[2].text(start_times[i] + durations[i] / 2, y_pos[i], tasks[i], va="center", ha="center", color="white")
+
+# Setting plot info
+ax[2].set_xlabel("Time (h)")
+ax[2].set_ylabel("Machines")
+ax[2].set_yticks(range(nMachines))
+ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
+ax[2].set_title("Best Found Schedule")
+ax[2].grid(axis="x", linestyle="--", alpha=0.7)
+
+plt.tight_layout()
+plt.show()
 
 
 
