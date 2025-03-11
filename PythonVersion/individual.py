@@ -16,6 +16,31 @@ class Individual:
     def __str__(self):
         return str(self.tasksPermutation) + "\n" + str(self.machinePermutation)
     
+    # Equal operator
+    def __eq__(self, value):
+        return self.fitness == value.fitness
+    
+    # Less than operator
+    # 1. Tardiness
+    # 2. Energy cost (If tardiness is the same)
+    def __lt__(self, value):
+        if self.fitness[0] < value.fitness[0]:
+            return True
+        elif self.fitness[0] == value.fitness[0]:
+            return self.fitness[1] < value.fitness[1]
+        return False
+    
+    # Greater than operator
+    # 1. Tardiness
+    # 2. Energy cost (If tardiness is the same)
+    def __gt__(self, value):
+        if self.fitness[0] > value.fitness[0]:
+            return True
+        elif self.fitness[0] == value.fitness[0]:
+            return self.fitness[1] > value.fitness[1]
+        return False
+        
+    
     # Generates a schedule based on the individual
     def genSchedule(self, problem):
         if len(self.tasksPermutation) != problem.nTasks or len(self.machinePermutation) != problem.nTasks: # If individual has no data
