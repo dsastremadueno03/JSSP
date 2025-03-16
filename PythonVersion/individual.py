@@ -5,8 +5,6 @@ import numpy as np
 
 
 class Individual:
-    
-    
 
     def __init__(self, taskPermutation, machinePermutation, idPermutation):
         self.tasksPermutation = taskPermutation # Stores the tasks (as jobs) in the order they are done
@@ -22,7 +20,8 @@ class Individual:
     
     # Equal operator
     def __eq__(self, value):
-        return self.fitness == value.fitness
+        EPSILON = np.finfo(float).eps
+        return (self.fitness[0] - value.fitness[0] < EPSILON) and (self.fitness[1] - value.fitness[1] < EPSILON)
     
     
     """
@@ -54,20 +53,21 @@ class Individual:
     # factor = 0 -> Tardiness
     # factor = 1 -> Energy cost
     def isBetter(self, other, mode, factor):
+        EPSILON = np.finfo(float).eps
         if mode == 0:
             # Minimize
             if factor == 0:
                 # Minimize tardiness
                 if self.fitness[0] < other.fitness[0]: 
                     return True
-                elif self.fitness[0] == other.fitness[0]:
+                elif self.fitness[0] - other.fitness[0] < EPSILON:
                     return self.fitness[1] < other.fitness[1]
                 return False
             else:
                 # Minimize energy cost
                 if self.fitness[1] < other.fitness[1]:
                     return True
-                elif self.fitness[1] == other.fitness[1]:
+                elif self.fitness[1] - other.fitness[1] < EPSILON:
                     return self.fitness[0] < other.fitness[0]
                 return False
         if mode == 1:
@@ -76,14 +76,14 @@ class Individual:
                 # Maximize tardiness
                 if self.fitness[0] > other.fitness[0]:
                     return True
-                elif self.fitness[0] == other.fitness[0]:
+                elif self.fitness[0] - other.fitness[0] < EPSILON:
                     return self.fitness[1] > other.fitness[1]
                 return False
             else:
                 # Maximize energy cost
                 if self.fitness[1] > other.fitness[1]:
                     return True
-                elif self.fitness[1] == other.fitness[1]:
+                elif self.fitness[1] - other.fitness[1] < EPSILON:
                     return self.fitness[0] > other.fitness[0]
                 return False
                 
