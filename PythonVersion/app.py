@@ -65,24 +65,21 @@ def genIndividual(problem):
 
 # Returns the best two individuals in a family of 2 parents and 2 children
 # MODES -> 0: Minimize; 1: Maximize
+# FACTORS -> 0: Tardiness; 1: Energy Consumption
 # bestInGen -> Best individual in the generation
-def getBestTwo(fam, mode, bestInGen):
+def getBestTwo(fam, mode, factor, bestInGen):
     best = bestInGen
-    # Lambda funtion that sorts by the time attribute first, and then by the energy. 
-    fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=(mode == 1))
-    result = fam[:2] # Take the best two
-    # If minimizing, check if the best of the generation is better than the best two of the family
-    if(mode == 0):
-        if result[0] < best:
-            best = result[0]
-        if result[1] < best:
-            best = result[1]
-    # If maximizing, check if the best of the generation is better than the best two of the family
+    # Lambda funtion that sorts by the priority attribute first, and then by the secondary. 
+    if factor == 0:
+        fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=(mode == 1))
     else:
-        if result[0] > best:
-            best = result[0]
-        if result[1] > best:
-            best = result[1]
+        fam.sort(key = lambda x: (x.fitness[1], x.fitness[0]), reverse=(mode == 1))
+    result = fam[:2] # Take the best two
+    # Check if the best of the generation is better than the best two of the current family
+    if result[0].isBetter(best, mode, factor):
+        best = result[0]
+    if result[1].isBetter(best, mode, factor):
+        best = result[1]
     result.append(best) # Add the best individual of the generation
     return result
     
@@ -120,7 +117,7 @@ for i in range(N_GENERATIONS):
     for family in currentGeneration:
         family.append(family[0].merge(family[1], PROBLEM))
         family.append(family[1].merge(family[0], PROBLEM))
-        best = getBestTwo(family, 0, bestInGen) # Minimize
+        best = getBestTwo(family, 0, 0, bestInGen) # Minimize by tardiness
         
     # Check if it is the best of the generation
         bestInGen = best[2] # Updates the best individual in the current generation

@@ -20,6 +20,9 @@ class Individual:
     def __eq__(self, value):
         return self.fitness == value.fitness
     
+    
+    """
+    
     # Less than operator
     # 1. Tardiness
     # 2. Energy cost (If tardiness is the same)
@@ -39,6 +42,48 @@ class Individual:
         elif self.fitness[0] == value.fitness[0]:
             return self.fitness[1] > value.fitness[1]
         return False
+    """
+    
+    # Checks if the individual is better than another one
+    # mode = 0 -> Minimize
+    # mode = 1 -> Maximize
+    # factor = 0 -> Tardiness
+    # factor = 1 -> Energy cost
+    def isBetter(self, other, mode, factor):
+        if mode == 0:
+            # Minimize
+            if factor == 0:
+                # Minimize tardiness
+                if self.fitness[0] < other.fitness[0]: 
+                    return True
+                elif self.fitness[0] == other.fitness[0]:
+                    return self.fitness[1] < other.fitness[1]
+                return False
+            else:
+                # Minimize energy cost
+                if self.fitness[1] < other.fitness[1]:
+                    return True
+                elif self.fitness[1] == other.fitness[1]:
+                    return self.fitness[0] < other.fitness[0]
+                return False
+        if mode == 1:
+            # Maximize
+            if factor == 0:
+                # Maximize tardiness
+                if self.fitness[0] > other.fitness[0]:
+                    return True
+                elif self.fitness[0] == other.fitness[0]:
+                    return self.fitness[1] > other.fitness[1]
+                return False
+            else:
+                # Maximize energy cost
+                if self.fitness[1] > other.fitness[1]:
+                    return True
+                elif self.fitness[1] == other.fitness[1]:
+                    return self.fitness[0] > other.fitness[0]
+                return False
+                
+        
         
     
     # Generates a schedule based on the individual
