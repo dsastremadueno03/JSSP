@@ -4,6 +4,7 @@ from problem import Problem
 from schedule import Schedule
 import matplotlib.pyplot as plt
 import random
+import pandas as pd
 
 
 """
@@ -246,6 +247,32 @@ ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 plt.tight_layout()
 plt.show()
 
+# GENERATE CSV
+
+headers = [
+    "Task",
+    "Job",
+    "Machine",
+    "Start Time",
+    "End Time"
+]
+
+df1 = pd.DataFrame(headers)
+
+data = [
+    best.idPermutation,
+    best.tasksPermutation,
+    best.machinePermutation,
+    best.schedule.startTimeTasks,
+    best.schedule.endTimeTasks
+]
+
+df2 = pd.DataFrame(data).T # Transpose the data to the headers
+
+df1.to_csv("result.csv", index=False, header=False)
+df2.to_csv("result.csv", mode='a', index=False, header=False)
+
+print("Results were saved correctly!")
 
 
 """

@@ -1,8 +1,12 @@
 from schedule import Schedule
 from problem import Problem
 import random
+import numpy as np
+
 
 class Individual:
+    
+    
 
     def __init__(self, taskPermutation, machinePermutation, idPermutation):
         self.tasksPermutation = taskPermutation # Stores the tasks (as jobs) in the order they are done
