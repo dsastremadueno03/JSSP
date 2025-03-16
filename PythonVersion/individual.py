@@ -19,9 +19,8 @@ class Individual:
         return str(self.tasksPermutation) + "\n" + str(self.machinePermutation)
     
     # Equal operator
-    def __eq__(self, value):
-        EPSILON = np.finfo(float).eps
-        return (self.fitness[0] - value.fitness[0] < EPSILON) and (self.fitness[1] - value.fitness[1] < EPSILON)
+    def __eq__(self, other):
+        return self.fitness == other.fitness
     
     
     """
@@ -60,14 +59,14 @@ class Individual:
                 # Minimize tardiness
                 if self.fitness[0] < other.fitness[0]: 
                     return True
-                elif self.fitness[0] - other.fitness[0] < EPSILON:
+                elif self.fitness[0] == other.fitness[0]:
                     return self.fitness[1] < other.fitness[1]
                 return False
             else:
                 # Minimize energy cost
                 if self.fitness[1] < other.fitness[1]:
                     return True
-                elif self.fitness[1] - other.fitness[1] < EPSILON:
+                elif self.fitness[1] == other.fitness[1]:
                     return self.fitness[0] < other.fitness[0]
                 return False
         if mode == 1:
@@ -76,14 +75,14 @@ class Individual:
                 # Maximize tardiness
                 if self.fitness[0] > other.fitness[0]:
                     return True
-                elif self.fitness[0] - other.fitness[0] < EPSILON:
+                elif self.fitness[0] == other.fitness[0]:
                     return self.fitness[1] > other.fitness[1]
                 return False
             else:
                 # Maximize energy cost
                 if self.fitness[1] > other.fitness[1]:
                     return True
-                elif self.fitness[1] - other.fitness[1] < EPSILON:
+                elif self.fitness[1] == other.fitness[1]:
                     return self.fitness[0] > other.fitness[0]
                 return False
                 

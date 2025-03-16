@@ -141,7 +141,7 @@ while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
     for family in currentGeneration:
         family.append(family[0].merge(family[1], PROBLEM))
         family.append(family[1].merge(family[0], PROBLEM))
-        best = getBestTwo(family, 0, 0, bestInGen) # Minimize by tardiness
+        best = getBestTwo(family, 1, 0, bestInGen) # Minimize by tardiness
         
     # Check if it is the best of the generation
         bestInGen = best[2] # Updates the best individual in the current generation
