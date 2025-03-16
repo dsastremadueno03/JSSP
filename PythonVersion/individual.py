@@ -19,8 +19,9 @@ class Individual:
         return str(self.tasksPermutation) + "\n" + str(self.machinePermutation)
     
     # Equal operator
-    def __eq__(self, other):
-        return self.fitness == other.fitness
+    def __eq__(self, value):
+        EPSILON = np.finfo(float).eps
+        return (abs(self.fitness[0] - value.fitness[0]) < EPSILON) and (abs(self.fitness[1] - value.fitness[1]) < EPSILON)
     
     
     """
@@ -57,33 +58,33 @@ class Individual:
             # Minimize
             if factor == 0:
                 # Minimize tardiness
-                if self.fitness[0] < other.fitness[0]: 
-                    return True
-                elif self.fitness[0] == other.fitness[0]:
+                if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
                     return self.fitness[1] < other.fitness[1]
+                elif self.fitness[0] < other.fitness[0]: 
+                    return True
                 return False
             else:
                 # Minimize energy cost
-                if self.fitness[1] < other.fitness[1]:
-                    return True
-                elif self.fitness[1] == other.fitness[1]:
+                if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
                     return self.fitness[0] < other.fitness[0]
+                elif self.fitness[1] < other.fitness[1]:
+                    return True
                 return False
         if mode == 1:
             # Maximize
             if factor == 0:
                 # Maximize tardiness
-                if self.fitness[0] > other.fitness[0]:
-                    return True
-                elif self.fitness[0] == other.fitness[0]:
+                if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
                     return self.fitness[1] > other.fitness[1]
+                elif self.fitness[0] > other.fitness[0]:
+                    return True
                 return False
             else:
                 # Maximize energy cost
-                if self.fitness[1] > other.fitness[1]:
-                    return True
-                elif self.fitness[1] == other.fitness[1]:
+                if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
                     return self.fitness[0] > other.fitness[0]
+                elif self.fitness[1] > other.fitness[1]:
+                    return True
                 return False
                 
         
