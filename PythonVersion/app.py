@@ -1,11 +1,12 @@
 from individual import Individual
+from instanceReader import InstanceReader
 from problem import Problem
 from schedule import Schedule
 import matplotlib.pyplot as plt
 import random
 
 
-
+"""
 # EXAMPLE DATA
 nJobs = 3 # Total number of jobs
 nTasks = 7 # Total number of tasks
@@ -28,15 +29,36 @@ tasksMachines = [
 
 mutationProb = 10 # Probability in % to get a mutation in a child
 
+"""
+
+# RETRIEVE DATA FROM FILES
+instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob.txt")
+
+# Read and assign data retrieved to the problem
+dataInstance = instanceReader.readInstance()
+dataPreparedJobs = instanceReader.readPreparedJobs()
+dataTOUPrices = instanceReader.readTOUPrices()
+dataPassiveEnergy = instanceReader.readPassiveEnergy()
+dataMutationProb = instanceReader.readMutationProb()
+instanceReader.transformInstanceData(dataInstance)
+instanceReader.transformPreparedJobsData(dataPreparedJobs)
+instanceReader.transformTOUPricesData(dataTOUPrices)
+instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
+instanceReader.transformMutationProbData(dataMutationProb)
+
+### FOR COMPARING RESULTS ONLY
+instanceReader.problem.mutationProb = 0
+instanceReader.problem.passiveEnergy = [0, 0, 0]
+
 # Creation of the problem
-PROBLEM = Problem(jobTasks, nJobs, nTasks, nMachines, energyPrices, dueDates, passiveEnergy, tasksMachines, mutationProb) #FINAL
+PROBLEM = instanceReader.problem #FINAL
 
 # FUNCTIONS
 # Creation of the individual
 def genIndividual(problem):
     jobs = []
     #Initialize to 0
-    for i in range(nJobs):
+    for i in range(problem.nJobs):
         jobs.append(0)
     tasks = []
     machines = []
@@ -155,7 +177,7 @@ for i in range(N_GENERATIONS):
     axisValue.append(int(i+1))
 
 fig, ax = plt.subplots(1, 3, figsize=(10, 6))
-colors = plt.cm.get_cmap("tab10", nMachines)
+colors = plt.cm.get_cmap("tab10", PROBLEM.nMachines)
 ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
 ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
 ax[0].set_xlabel('Generation')
@@ -176,7 +198,7 @@ machine_labels = []
 tasks = []
 start_times = []
 
-for i in range(nMachines):
+for i in range(PROBLEM.nMachines):
     y_pos.append(i)
 
 for task in range(PROBLEM.nTasks):
@@ -193,7 +215,7 @@ for task in range(PROBLEM.nTasks):
 
 for i in range(PROBLEM.nTasks):
     ax[2].barh(machine_labels[i], durations[i], left=start_times[i], 
-                color=colors(machine_labels[i] % nMachines), edgecolor="black")
+                color=colors(machine_labels[i] % PROBLEM.nMachines), edgecolor="black")
     
     # Label each task in the middle of the bar
     ax[2].text(start_times[i] + durations[i] / 2, machine_labels[i], tasks[i], 
@@ -204,8 +226,8 @@ ax[2].set_xlabel("Time (h)")
 ax[2].set_ylabel("Machines")
 
 # Ensure only the 3 machines appear on the y-axis
-ax[2].set_yticks(range(nMachines))  
-ax[2].set_yticklabels([f"M{i}" for i in range(nMachines)])
+ax[2].set_yticks(range(PROBLEM.nMachines))  
+ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
 
 ax[2].set_title("Best Found Schedule")
 ax[2].grid(axis="x", linestyle="--", alpha=0.7)

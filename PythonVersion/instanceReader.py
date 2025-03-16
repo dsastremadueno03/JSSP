@@ -3,11 +3,13 @@ import ast
 
 class InstanceReader:
 
-    def __init__(self, pathIntances, pathPreparedJobs, pathTOUPrices):
+    def __init__(self, pathIntances, pathPreparedJobs, pathTOUPrices, pathPassiveEnergy, pathMutationProb):
         self.problem = Problem([], 0, 0, 0, [], [], [], [], 0) # Initialize the problem
         self.pathIntances = pathIntances
         self.pathPreparedJobs = pathPreparedJobs
         self.pathTOUPrices = pathTOUPrices
+        self.pathPassiveEnergy = pathPassiveEnergy
+        self.pathMutationProb = pathMutationProb
         
     # Read the instance file and return the data
     # DATA RETRIEVED:
@@ -43,6 +45,25 @@ class InstanceReader:
         f.close()
         return lines
     
+    # Read the passive energy file and return the data
+    # DATA RETRIEVED:
+    # passiveEnergy
+    def readPassiveEnergy(self):
+        f = open(self.pathPassiveEnergy, 'r')
+        data = ast.literal_eval(f.readline().strip()) # Read the array and automatically convert it
+        f.close()
+        return data
+    
+    # Read the mutation probability file and return the data
+    # DATA RETRIEVED:
+    # mutationProb
+    def readMutationProb(self):
+        f = open(self.pathMutationProb, 'r')
+        data = int(f.readline().strip()) # Read the value and convert it to int
+        f.close()
+        return data
+    
+    # Transform the instance data and assign it to the problem
     def transformInstanceData(self, data):
         self.problem.nJobs = int(data[0][0])
         self.problem.nMachines = int(data[0][1])
@@ -82,7 +103,8 @@ class InstanceReader:
         for i in range(self.problem.nMachines):
             print(self.problem.tasksMachines[i])
                     """
-              
+    
+    # Transform the prepared jobs data and assign it to the problem   
     def transformPreparedJobsData(self, data):
         for job in data:
             self.problem.dueDates.append(job[0][0][4]) # Append the due date for the job
@@ -101,12 +123,9 @@ class InstanceReader:
                     for k in range(self.problem.nMachines):
                         if k not in setPossibleMachines:
                             self.problem.tasksMachines[k].append([-1, -1])
-                            
-        for i in range(self.problem.nMachines):
-            print(self.problem.tasksMachines[i])
-        print()
-        print(self.problem.dueDates)
+                    
         
+    # Transform the TOU prices data and assign it to the problem
     def transformTOUPricesData(self, data):
         actualData = data[196:220] # Fixed values from file format (TOU prices from hour 0 till 24)
         fixedData = []
@@ -114,32 +133,29 @@ class InstanceReader:
             fixedData.append(value.strip(','))
         finalData = []
         for i in range(len(fixedData)):
-            finalData.append(int(fixedData[i])/100.0)
+            finalData.append(int(fixedData[i])/100.0) # Obtain decimal value
         self.problem.energyPrices = finalData
+        
+    # Transform the passive energy data and assign it to the problem
+    def transformPassiveEnergyData(self, data):
+        self.problem.passiveEnergy = data
+        
+    # Transform the mutation probability data and assign it to the problem
+    def transformMutationProbData(self, data):
+        self.problem.mutationProb = data
 
-        
-            
-        
-        
-        
-        
     
 print("TEST")
-instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1")
+instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob.txt")
 
 # Read and assign data retrieved to the problem
-### DATA RETRIEVED ###
-# nJobs
-# nMachines
-# nTasks
-# jobTasks
-# tasksMachines (durations only)
 dataInstance = instanceReader.readInstance()
 dataPreparedJobs = instanceReader.readPreparedJobs()
 dataTOUPrices = instanceReader.readTOUPrices()
 instanceReader.transformInstanceData(dataInstance)
 instanceReader.transformPreparedJobsData(dataPreparedJobs)
 instanceReader.transformTOUPricesData(dataTOUPrices)
+
 
 
 
