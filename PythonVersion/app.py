@@ -32,7 +32,7 @@ mutationProb = 10 # Probability in % to get a mutation in a child
 """
 
 # RETRIEVE DATA FROM FILES
-instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob.txt")
+instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_59_10jobs_10machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_59_10jobs_10machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_10machines.txt", r"mutation_prob.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -48,7 +48,7 @@ instanceReader.transformMutationProbData(dataMutationProb)
 
 ### FOR COMPARING RESULTS ONLY
 instanceReader.problem.mutationProb = 0
-instanceReader.problem.passiveEnergy = [0, 0, 0]
+instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 # Creation of the problem
 PROBLEM = instanceReader.problem #FINAL
@@ -111,8 +111,7 @@ def getBestTwo(fam, mode, factor, bestInGen):
 ###    MAIN    ###
 ##################
 
-N_INDIVIDUALS = 20
-N_GENERATIONS = 20
+N_INDIVIDUALS = 40
 currentGeneration = []
 nextGeneration = []
 fitnessTimePlot = []
@@ -131,10 +130,13 @@ for i in range(N_INDIVIDUALS//2):
     bestInGen = family[0]
     currentGeneration.append(family)
 
-
-# Start genetic algorithm
-for i in range(N_GENERATIONS):
-    print("Generation " + str(i) + " in progress...")
+# Threshold for the algorithm to stop
+nGenWithoutImprovement = 0
+gen = 0 # Generation counter
+# Start genetic algorithm and stop when there is no improvement in 20 generations
+while(nGenWithoutImprovement < 20):
+    print("Generation " + str(gen) + " in progress...")
+    lastBest = bestInGen
     # 2nd -> Create children and evaluate
     for family in currentGeneration:
         family.append(family[0].merge(family[1], PROBLEM))
@@ -143,22 +145,34 @@ for i in range(N_GENERATIONS):
         
     # Check if it is the best of the generation
         bestInGen = best[2] # Updates the best individual in the current generation
-
+        
     # 3rd -> Add to new generation the best two per family
 
         nextGeneration.append(best[0])
         nextGeneration.append(best[1])
         
-    # 4th -> Shuffle generation (different genes) and join in pairs again
+    # See if there was improvement
+    if bestInGen == lastBest:
+        nGenWithoutImprovement += 1
+        print(nGenWithoutImprovement)
+    else:
+        nGenWithoutImprovement = 0
+        print(nGenWithoutImprovement)
+          
+    # 4th -> Shuffle generation (different genes) and join in pairs again  
     random.shuffle(nextGeneration)
     currentGeneration.clear()
     for i in range(0, N_INDIVIDUALS, 2):
         currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
     nextGeneration.clear()
+    gen += 1
 
 # Show best individual obtained by tardiness and energy cost separately
     fitnessTimePlot.append(bestInGen.fitness[0])
     fitnessEnergyPlot.append(bestInGen.fitness[1])
+
+# Save total number of generations
+N_GENERATIONS = gen
 
 # Best individual data    
 best = bestInGen
@@ -177,7 +191,7 @@ for i in range(N_GENERATIONS):
     axisValue.append(int(i+1))
 
 fig, ax = plt.subplots(1, 3, figsize=(10, 6))
-colors = plt.cm.get_cmap("tab10", PROBLEM.nMachines)
+colors = plt.get_cmap("tab10", PROBLEM.nMachines)
 ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
 ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
 ax[0].set_xlabel('Generation')

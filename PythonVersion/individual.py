@@ -126,7 +126,8 @@ class Individual:
             endTime = self.schedule.endTimeTasks[i]
             # Calculates with the range of time in the schedule the price of the active energy consumed
             for j in range(startTime, endTime): 
-                actEnergyPrice += problem.energyPrices[j] * consumption # Multiply hour price by the amount of energy consumed 
+                equivalentHour = j % 24 # Equivalent hour in the energy prices array
+                actEnergyPrice += problem.energyPrices[equivalentHour] * consumption # Multiply hour price by the amount of energy consumed 
         
         # Returns the price of the active energy of the individual
         return actEnergyPrice
@@ -143,7 +144,8 @@ class Individual:
         # and multiply it by the machine passive energy consumption
         for i in range(problem.nMachines):
             for j in range(self.schedule.startMachine[i], self.schedule.endMachine[i]):
-                pasEnergyPrice += problem.energyPrices[j] * problem.passiveEnergy[i]
+                equivalentHour = j % 24 # Equivalent hour in the energy prices array
+                pasEnergyPrice += problem.energyPrices[equivalentHour] * problem.passiveEnergy[i]
         return pasEnergyPrice
          
     # Calculates the energy consumption     
