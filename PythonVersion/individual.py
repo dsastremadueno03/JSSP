@@ -126,16 +126,11 @@ class Individual:
             # Energy consumed
             consumption = problem.getData(machine, task)[1] # Access to energy cost of doing the task in a specific machine
             # Time of use
-            startTime = self.schedule.startTimeTasks[i] // 60
-            endTime = self.schedule.endTimeTasks[i] // 60
-            # We need to take into account a possible not complete hour
-            extraTime = (self.schedule.endTimeTasks[i] % 60) / 60
+            startTime = self.schedule.startTimeTasks[i] 
+            endTime = self.schedule.endTimeTasks[i] 
             # Calculates with the range of time in the schedule the price of the active energy consumed
             for j in range(startTime, endTime): 
-                equivalentHour = j % 24 # Equivalent hour in the energy prices array
-                actEnergyPrice += problem.energyPrices[equivalentHour] * consumption # Multiply hour price by the amount of energy consumed 
-            # Calculate the extra minutes price
-            actEnergyPrice += extraTime * problem.energyPrices[endTime % 24] * consumption
+                actEnergyPrice += problem.energyPrices[j] * consumption # Multiply minute price by the amount of energy consumed 
         # Returns the price of the active energy of the individual
         return actEnergyPrice
         

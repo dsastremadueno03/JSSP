@@ -137,7 +137,8 @@ class InstanceReader:
             fixedData.append(value.strip(','))
         finalData = []
         for i in range(len(fixedData)):
-            finalData.append(int(fixedData[i])/100.0) # Obtain decimal value
+            for _ in range(60): # For each minute
+                finalData.append(int(fixedData[i])/60/100.0) # Obtain decimal value (/60 for minutes, /100 for two-digit decimal value)
         self.problem.energyPrices = finalData
         
     # Transform the passive energy data and assign it to the problem
