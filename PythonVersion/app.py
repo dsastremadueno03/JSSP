@@ -192,7 +192,7 @@ colors = plt.get_cmap("tab10", PROBLEM.nMachines)
 ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
 ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
 ax[0].set_xlabel('Generation')
-ax[0].set_ylabel('Tardiness (h)')
+ax[0].set_ylabel('Tardiness (min)')
 ax[0].set_title('Evolution of tardiness')
 
 ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
