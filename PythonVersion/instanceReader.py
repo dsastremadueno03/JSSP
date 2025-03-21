@@ -118,7 +118,7 @@ class InstanceReader:
                         machineId = machine[0]
                         if machineId not in setPossibleMachines: # There are multiple options in the input file (just take first one)
                             duration = machine[1]
-                            energy = machine[2] / 10000
+                            energy = machine[2] / 100
                             param = [duration, energy]
                             self.problem.tasksMachines[machineId].append(param)
                             setPossibleMachines.append(machineId)
