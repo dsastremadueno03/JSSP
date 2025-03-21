@@ -62,6 +62,7 @@ class InstanceReader:
     def readMutationProb(self):
         f = open(self.pathMutationProb, 'r')
         data = []
+        f.readline().strip() # Skip first line (only info)
         for i in range(3):
             data.append(int(f.readline().strip())) # Read the values and convert it to int to append it in data
         f.close()
