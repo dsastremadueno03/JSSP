@@ -36,9 +36,13 @@ tasksMachines = [
 mutationProb = 10 # Probability in % to get a mutation in a child
 
 """
+# Parameters to know which file to read
+iLabel = 59
+iJob = 10
+iMachine = 10
 
 # RETRIEVE DATA FROM FILES
-instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_59_10jobs_10machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_59_10jobs_10machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_10machines.txt", r"mutation_prob_genetic_parameters.txt")
+instanceReader = InstanceReader(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared.data", fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", fr"passive_energy\passive_energy_{iMachine}machines.txt", r"mutation_prob_genetic_parameters.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -141,6 +145,9 @@ for a in range(nIterations):
     fitnessTimePlot = []
     fitnessEnergyPlot = []
     
+    # Starts clock on this iteration
+    initIter = time.time()
+    
 
     # 1st -> Create initial pairs of individuals
 
@@ -188,6 +195,9 @@ for a in range(nIterations):
     # Show best individual obtained by tardiness and energy cost separately
         fitnessTimePlot.append(bestInGen.fitness[0])
         fitnessEnergyPlot.append(bestInGen.fitness[1])
+    
+    # Stops the clock for this iteration
+    endIter = time.time()
 
     # Save total number of generations
     N_GENERATIONS = gen
@@ -199,14 +209,19 @@ for a in range(nIterations):
     path = os.path.join(folder+r"\pickle", f"result_{a+1}.pkl")
     with open(path, 'wb') as file: 
         pickle.dump(best, file)
+    
+    # Recording of information regarding this iteration, saved in the "result" folder
     path = os.path.join(folder+r"\text", f"result_{a+1}.txt")
     with open(path, 'w') as file: 
+        print(f"\nITERATION {a+1}\n\n", file=file)
         print("BEST:", file=file)
         print(best, file=file)
         print(best.schedule.startTimeTasks, file=file)
         print(best.schedule.endTimeTasks, file=file)
         print("Tardiness: " + str(best.fitness[0]), file=file)
         print("Energy Consumption: " + str(best.fitness[1]), file=file)
+        print("Number of generations: " + str(N_GENERATIONS), file=file)
+        print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
     
 end = time.time()
 print("Execution time (s)")
