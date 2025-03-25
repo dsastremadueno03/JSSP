@@ -129,6 +129,8 @@ folder = "results"
 if os.path.exists(folder):
     shutil.rmtree(folder)
 os.makedirs(folder, exist_ok=True)
+os.makedirs(folder+r"\pickle", exist_ok=True)
+os.makedirs(folder+r"\text", exist_ok=True)
 
 # Starts the clock
 init = time.time()
@@ -192,17 +194,19 @@ for a in range(nIterations):
 
     # Best individual data    
     best = bestInGen
-    print("BEST:")
-    print(best)
-    print(best.schedule.startTimeTasks)
-    print(best.schedule.endTimeTasks)
-    print("Tardiness: " + str(best.fitness[0]))
-    print("Energy Consumption: " + str(best.fitness[1]))
 
     # Serialize best candidate with pickle and save it in a "result" folder
-    path = os.path.join(folder, f"result_{a+1}.pkl")
+    path = os.path.join(folder+r"\pickle", f"result_{a+1}.pkl")
     with open(path, 'wb') as file: 
         pickle.dump(best, file)
+    path = os.path.join(folder+r"\text", f"result_{a+1}.txt")
+    with open(path, 'w') as file: 
+        print("BEST:", file=file)
+        print(best, file=file)
+        print(best.schedule.startTimeTasks, file=file)
+        print(best.schedule.endTimeTasks, file=file)
+        print("Tardiness: " + str(best.fitness[0]), file=file)
+        print("Energy Consumption: " + str(best.fitness[1]), file=file)
     
 end = time.time()
 print("Execution time (s)")
