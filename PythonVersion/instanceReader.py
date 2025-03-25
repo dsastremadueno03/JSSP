@@ -63,7 +63,7 @@ class InstanceReader:
         f = open(self.pathMutationProb, 'r')
         data = []
         f.readline().strip() # Skip first line (only info)
-        for i in range(4):
+        for i in range(6):
             data.append(int(f.readline().strip())) # Read the values and convert it to int to append it in data
         f.close()
         return data
@@ -151,7 +151,7 @@ class InstanceReader:
         self.problem.mutationProb = data[0]
         self.problem.thresholdGenetic = data[1]
         self.problem.nIndividual = data[2]
-        return data[3] # Returns the number of iterations per instance to the main directly
+        return data[3], data[4], data[5] # Returns the number of iterations per instance to the main directly
     
 print("TEST")
 instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob.txt")

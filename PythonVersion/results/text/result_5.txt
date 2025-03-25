@@ -10,4 +10,4 @@ BEST:
 Tardiness: 12
 Energy Consumption: 567.8188333333375
 Number of generations: 142
-Calculation time of this iteration (s): 15.901370763778687
+Calculation time of this iteration (s): 15.225339651107788

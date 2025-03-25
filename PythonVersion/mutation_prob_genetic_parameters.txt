@@ -1,5 +1,7 @@
-Mutation probability, Threshold, Individuals per generation, Number of iterations per instance
+Mutation probability, Threshold, Individuals per generation, Number of iterations per instance, Mode, Factor
 100
 15
 100
 10
+0
+0

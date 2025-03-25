@@ -55,7 +55,9 @@ instanceReader.transformPreparedJobsData(dataPreparedJobs)
 instanceReader.transformTOUPricesData(dataTOUPrices)
 instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
 # Store the number of iterations per instance (repetitions of the algorithm)
-nIterations = instanceReader.transformMutationProbData(dataMutationProb)
+# MODE -> 0: Minimize; 1: Maximize
+# FACTOR -> 0: Tardiness; 1: Energy Cost
+nIterations, mode, factor = instanceReader.transformMutationProbData(dataMutationProb)
 
 ### FOR COMPARING RESULTS ONLY
 instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -124,9 +126,6 @@ def getBestTwo(fam, mode, factor, bestInGen):
 N_INDIVIDUALS = PROBLEM.nIndividual
 totalExecutionTime = 0.0
 
-# MODE -> 0: Minimize; 1: Maximize
-mode = 0
-
 plt.style.use('_mpl-gallery')
 
 # Restart folder to store the results
@@ -159,9 +158,10 @@ for a in range(nIterations):
         bestInGen = family[0]
         currentGeneration.append(family)
 
-    # Threshold for the algorithm to stop
+    # Counter for the threshold for the algorithm to stop
     nGenWithoutImprovement = 0
     gen = 0 # Generation counter
+    
     # Start genetic algorithm and stop when there is no improvement in whatever the mutation_prob file states generations
     while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
         print("Generation " + str(gen) + " in progress...")
@@ -170,7 +170,7 @@ for a in range(nIterations):
         for family in currentGeneration:
             family.append(family[0].merge(family[1], PROBLEM))
             family.append(family[1].merge(family[0], PROBLEM))
-            best = getBestTwo(family, 0, 0, bestInGen) # Minimize by tardiness
+            best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness
             
         # Check if it is the best of the generation
             bestInGen = best[2] # Updates the best individual in the current generation
@@ -209,7 +209,7 @@ for a in range(nIterations):
     
     # If the best of this generation is better than the best registered for this instance 
     # or the latter is None, update
-    if best.isBetter(bestOfTheBests) or bestOfTheBests is None:
+    if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor):
         bestOfTheBests = best
 
     # Serialize best candidate with pickle and save it in a "result" folder
@@ -291,7 +291,7 @@ for a in range(nIterations):
     ax[2].set_title("Best Found Schedule")
     ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 
-    path = os.path.join(folder+r"\graphic", f"result_{a+1}.txt")
+    path = os.path.join(folder+r"\graphic", f"plot_result_{a+1}.pkl")
     with open(path, 'wb') as file:
         pickle.dump(fig, file)
     
