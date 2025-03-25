@@ -2,9 +2,10 @@ import pickle
 import os
 import glob
 
-# Unpickle individual
+# Unpickle individuals
 individuals = []
 
+# Stores the individuals in the folder "results"
 path = glob.glob(os.path.join("results", "*.pkl"))
 for file in path:
     with open(file, 'rb') as pickled:

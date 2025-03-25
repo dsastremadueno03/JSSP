@@ -7,6 +7,7 @@ import random
 import pandas as pd
 import pickle
 import os
+import shutil
 
 random.seed(4) # Fix the randomness
 
@@ -48,7 +49,8 @@ instanceReader.transformInstanceData(dataInstance)
 instanceReader.transformPreparedJobsData(dataPreparedJobs)
 instanceReader.transformTOUPricesData(dataTOUPrices)
 instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
-instanceReader.transformMutationProbData(dataMutationProb)
+# Store the number of iterations per instance (repetitions of the algorithm)
+nIterations = instanceReader.transformMutationProbData(dataMutationProb)
 
 ### FOR COMPARING RESULTS ONLY
 instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -113,83 +115,90 @@ def getBestTwo(fam, mode, factor, bestInGen):
 ##################
 ###    MAIN    ###
 ##################
+
 N_INDIVIDUALS = PROBLEM.nIndividual
-currentGeneration = []
-nextGeneration = []
-fitnessTimePlot = []
-fitnessEnergyPlot = []
 
 # MODE -> 0: Minimize; 1: Maximize
 mode = 0
 
 plt.style.use('_mpl-gallery')
 
-# 1st -> Create initial pairs of individuals
-
-for i in range(N_INDIVIDUALS//2):
-    
-    family = [genIndividual(PROBLEM), genIndividual(PROBLEM)]
-    bestInGen = family[0]
-    currentGeneration.append(family)
-
-# Threshold for the algorithm to stop
-nGenWithoutImprovement = 0
-gen = 0 # Generation counter
-# Start genetic algorithm and stop when there is no improvement in whatever the mutation_prob file states generations
-while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
-    print("Generation " + str(gen) + " in progress...")
-    lastBest = bestInGen
-    # 2nd -> Create children and evaluate
-    for family in currentGeneration:
-        family.append(family[0].merge(family[1], PROBLEM))
-        family.append(family[1].merge(family[0], PROBLEM))
-        best = getBestTwo(family, 0, 0, bestInGen) # Minimize by tardiness
-        
-    # Check if it is the best of the generation
-        bestInGen = best[2] # Updates the best individual in the current generation
-        
-    # 3rd -> Add to new generation the best two per family
-
-        nextGeneration.append(best[0])
-        nextGeneration.append(best[1])
-        
-    # See if there was improvement
-    if bestInGen == lastBest:
-        nGenWithoutImprovement += 1
-    else:
-        nGenWithoutImprovement = 0
-          
-    # 4th -> Shuffle generation (different genes) and join in pairs again  
-    random.shuffle(nextGeneration)
-    currentGeneration.clear()
-    for i in range(0, N_INDIVIDUALS, 2):
-        currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
-    nextGeneration.clear()
-    gen += 1
-
-# Show best individual obtained by tardiness and energy cost separately
-    fitnessTimePlot.append(bestInGen.fitness[0])
-    fitnessEnergyPlot.append(bestInGen.fitness[1])
-
-# Save total number of generations
-N_GENERATIONS = gen
-
-# Best individual data    
-best = bestInGen
-print("BEST:")
-print(best)
-print(best.schedule.startTimeTasks)
-print(best.schedule.endTimeTasks)
-print("Tardiness: " + str(best.fitness[0]))
-print("Energy Consumption: " + str(best.fitness[1]))
-
-# Serialize best candidate with pickle and save it in a "result" folder
-
+# Restart folder to store the results
 folder = "results"
+if os.path.exists(folder):
+    shutil.rmtree(folder)
 os.makedirs(folder, exist_ok=True)
-path = os.path.join(folder, "result.pkl")
-with open(path, 'wb') as file: 
-    pickle.dump(best, file)
+
+for a in range(nIterations):
+    currentGeneration = []
+    nextGeneration = []
+    fitnessTimePlot = []
+    fitnessEnergyPlot = []
+    
+
+    # 1st -> Create initial pairs of individuals
+
+    for i in range(N_INDIVIDUALS//2):
+        
+        family = [genIndividual(PROBLEM), genIndividual(PROBLEM)]
+        bestInGen = family[0]
+        currentGeneration.append(family)
+
+    # Threshold for the algorithm to stop
+    nGenWithoutImprovement = 0
+    gen = 0 # Generation counter
+    # Start genetic algorithm and stop when there is no improvement in whatever the mutation_prob file states generations
+    while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
+        print("Generation " + str(gen) + " in progress...")
+        lastBest = bestInGen
+        # 2nd -> Create children and evaluate
+        for family in currentGeneration:
+            family.append(family[0].merge(family[1], PROBLEM))
+            family.append(family[1].merge(family[0], PROBLEM))
+            best = getBestTwo(family, 0, 0, bestInGen) # Minimize by tardiness
+            
+        # Check if it is the best of the generation
+            bestInGen = best[2] # Updates the best individual in the current generation
+            
+        # 3rd -> Add to new generation the best two per family
+
+            nextGeneration.append(best[0])
+            nextGeneration.append(best[1])
+            
+        # See if there was improvement
+        if bestInGen == lastBest:
+            nGenWithoutImprovement += 1
+        else:
+            nGenWithoutImprovement = 0
+            
+        # 4th -> Shuffle generation (different genes) and join in pairs again  
+        random.shuffle(nextGeneration)
+        currentGeneration.clear()
+        for i in range(0, N_INDIVIDUALS, 2):
+            currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
+        nextGeneration.clear()
+        gen += 1
+
+    # Show best individual obtained by tardiness and energy cost separately
+        fitnessTimePlot.append(bestInGen.fitness[0])
+        fitnessEnergyPlot.append(bestInGen.fitness[1])
+
+    # Save total number of generations
+    N_GENERATIONS = gen
+
+    # Best individual data    
+    best = bestInGen
+    print("BEST:")
+    print(best)
+    print(best.schedule.startTimeTasks)
+    print(best.schedule.endTimeTasks)
+    print("Tardiness: " + str(best.fitness[0]))
+    print("Energy Consumption: " + str(best.fitness[1]))
+
+    # Serialize best candidate with pickle and save it in a "result" folder
+    path = os.path.join(folder, f"result_{a+1}.pkl")
+    with open(path, 'wb') as file: 
+        pickle.dump(best, file)
     
 
 # Plot of fitness evolution
