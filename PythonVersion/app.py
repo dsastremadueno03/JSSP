@@ -122,6 +122,7 @@ def getBestTwo(fam, mode, factor, bestInGen):
 ##################
 
 N_INDIVIDUALS = PROBLEM.nIndividual
+totalExecutionTime = 0.0
 
 # MODE -> 0: Minimize; 1: Maximize
 mode = 0
@@ -135,9 +136,11 @@ if os.path.exists(folder):
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"\pickle", exist_ok=True)
 os.makedirs(folder+r"\text", exist_ok=True)
+os.makedirs(folder+r"\graphic", exist_ok=True)
 
-# Starts the clock
-init = time.time()
+
+# This is the best individual among the best individuals from each iteration
+bestOfTheBests = None
 
 for a in range(nIterations):
     currentGeneration = []
@@ -147,7 +150,6 @@ for a in range(nIterations):
     
     # Starts clock on this iteration
     initIter = time.time()
-    
 
     # 1st -> Create initial pairs of individuals
 
@@ -198,12 +200,17 @@ for a in range(nIterations):
     
     # Stops the clock for this iteration
     endIter = time.time()
-
+    totalExecutionTime += (endIter - initIter) # Add to the total time
     # Save total number of generations
     N_GENERATIONS = gen
 
     # Best individual data    
     best = bestInGen
+    
+    # If the best of this generation is better than the best registered for this instance 
+    # or the latter is None, update
+    if best.isBetter(bestOfTheBests) or bestOfTheBests is None:
+        bestOfTheBests = best
 
     # Serialize best candidate with pickle and save it in a "result" folder
     path = os.path.join(folder+r"\pickle", f"result_{a+1}.pkl")
@@ -222,10 +229,87 @@ for a in range(nIterations):
         print("Energy Consumption: " + str(best.fitness[1]), file=file)
         print("Number of generations: " + str(N_GENERATIONS), file=file)
         print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
+        
+    # Saving the graphic results as pickle in the "result folder"
+    axisValue = []
+    for i in range(N_GENERATIONS):
+        axisValue.append(int(i+1))
+
+    fig, ax = plt.subplots(1, 3, figsize=(10, 6))
+    colors = plt.get_cmap("tab10", PROBLEM.nMachines)
+    ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
+    ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
+    ax[0].set_xlabel('Generation')
+    ax[0].set_ylabel('Tardiness (min)')
+    ax[0].set_title('Evolution of tardiness')
+
+    ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
+    ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
+    ax[1].set_xlabel('Generation')
+    ax[1].set_ylabel('Energy Cost (€)')
+    ax[1].set_title('Evolution of energy cost')
+
+    # Plot of schedule
+
+    y_pos = []
+    durations = []
+    machine_labels = []
+    tasks = []
+    start_times = []
+
+    for i in range(PROBLEM.nMachines):
+        y_pos.append(i)
+
+    for task in range(PROBLEM.nTasks):
+        if best.schedule.startTimeTasks[task] != -1:
+            start = best.schedule.startTimeTasks[task]
+            end = best.schedule.endTimeTasks[task]
+            duration = end - start
+
+            start_times.append(start)
+            durations.append(duration)
+            tasks.append(f"T{task}")  # Task tag
+            indexMachine = best.idPermutation.index(task)
+            machine_labels.append(best.machinePermutation[indexMachine])  # Assigned machine
+
+    for i in range(PROBLEM.nTasks):
+        ax[2].barh(machine_labels[i], durations[i], left=start_times[i], 
+                    color=colors(machine_labels[i] % PROBLEM.nMachines), edgecolor="black")
+        
+        # Label each task in the middle of the bar
+        ax[2].text(start_times[i] + durations[i] / 2, machine_labels[i], tasks[i], 
+                va="center", ha="center", color="white")
+
+    # Setting plot info
+    ax[2].set_xlabel("Time (h)")
+    ax[2].set_ylabel("Machines")
+
+    # Ensure only the 3 machines appear on the y-axis
+    ax[2].set_yticks(range(PROBLEM.nMachines))  
+    ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
+
+    ax[2].set_title("Best Found Schedule")
+    ax[2].grid(axis="x", linestyle="--", alpha=0.7)
+
+    path = os.path.join(folder+r"\graphic", f"result_{a+1}.txt")
+    with open(path, 'wb') as file:
+        pickle.dump(fig, file)
     
-end = time.time()
+best = bestOfTheBests
+# Register the best out of the best individuals for each of the iterations
+path = os.path.join(folder+r"\text", f"best_out_of_all.txt")
+with open(path, 'w') as file: 
+    print("BEST:", file=file)        
+    print(best, file=file)
+    print(best.schedule.startTimeTasks, file=file)
+    print(best.schedule.endTimeTasks, file=file)
+    print("Tardiness: " + str(best.fitness[0]), file=file)
+    print("Energy Consumption: " + str(best.fitness[1]), file=file)
+
 print("Execution time (s)")
-print(end-init)
+print(totalExecutionTime)
+
+"""
 # Plot of fitness evolution
 
 axisValue = []
@@ -290,6 +374,7 @@ ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 
 plt.tight_layout()
 plt.show()
+"""
 
 """
 # GENERATE CSV

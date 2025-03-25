@@ -7,7 +7,7 @@ individuals = []
 i = 1
 
 # Stores the individuals in the folder "results"
-path = glob.glob(os.path.join("results", "*.pkl"))
+path = glob.glob(os.path.join(r"results\pickle", "*.pkl"))
 for file in path:
     with open(file, 'rb') as pickled:
         bestInd = pickle.load(pickled)
