@@ -5,7 +5,10 @@ from schedule import Schedule
 import matplotlib.pyplot as plt
 import random
 import pandas as pd
+import pickle
+import os
 
+random.seed(4) # Fix the randomness
 
 """
 # EXAMPLE DATA
@@ -179,6 +182,14 @@ print(best.schedule.startTimeTasks)
 print(best.schedule.endTimeTasks)
 print("Tardiness: " + str(best.fitness[0]))
 print("Energy Consumption: " + str(best.fitness[1]))
+
+# Serialize best candidate with pickle and save it in a "result" folder
+
+folder = "results"
+os.makedirs(folder, exist_ok=True)
+path = os.path.join(folder, "result.pkl")
+with open(path, 'wb') as file: 
+    pickle.dump(best, file)
     
 
 # Plot of fitness evolution
@@ -246,6 +257,7 @@ ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 plt.tight_layout()
 plt.show()
 
+"""
 # GENERATE CSV
 
 headers = [
@@ -273,6 +285,7 @@ df2.to_csv("result.csv", mode='a', index=False, header=False)
 
 print("Results were saved correctly!")
 
+"""
 
 """
 
