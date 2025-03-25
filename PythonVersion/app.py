@@ -2,12 +2,13 @@ from individual import Individual
 from instanceReader import InstanceReader
 from problem import Problem
 from schedule import Schedule
-import matplotlib.pyplot as plt
-import random
-import pandas as pd
-import pickle
-import os
-import shutil
+import matplotlib.pyplot as plt # Generate the result plots
+import random # Randomize creation of individuals and other decisions
+import pandas as pd # Export data as csv
+import pickle # Serialize the best individuals
+import os # Access paths
+import shutil # Delete the whole result file
+import time # Check time of the runtime
 
 random.seed(4) # Fix the randomness
 
@@ -129,6 +130,9 @@ if os.path.exists(folder):
     shutil.rmtree(folder)
 os.makedirs(folder, exist_ok=True)
 
+# Starts the clock
+init = time.time()
+
 for a in range(nIterations):
     currentGeneration = []
     nextGeneration = []
@@ -200,7 +204,9 @@ for a in range(nIterations):
     with open(path, 'wb') as file: 
         pickle.dump(best, file)
     
-
+end = time.time()
+print("Execution time (s)")
+print(end-init)
 # Plot of fitness evolution
 
 axisValue = []

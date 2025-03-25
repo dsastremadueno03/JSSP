@@ -1,7 +1,7 @@
 from schedule import Schedule
 from problem import Problem
 import random
-import numpy as np
+import numpy as np # Epsilon
 
 
 class Individual:

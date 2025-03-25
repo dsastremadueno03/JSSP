@@ -1,5 +1,5 @@
 from problem import Problem
-import ast
+import ast # Automatic conversion of data
 
 class InstanceReader:
 

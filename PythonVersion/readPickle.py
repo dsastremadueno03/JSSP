@@ -1,6 +1,6 @@
-import pickle
-import os
-import glob
+import pickle # Read pickled objects
+import os # Access the path
+import glob # Get the general files (*)
 
 # Unpickle individuals
 individuals = []
