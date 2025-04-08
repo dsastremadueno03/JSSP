@@ -9,6 +9,7 @@ import pickle # Serialize the best individuals
 import os # Access paths
 import shutil # Delete the whole result file
 import time # Check time of the runtime
+import glob # Access files in the folder with *
 
 random.seed(4) # Fix the randomness
 
@@ -131,12 +132,19 @@ plt.style.use('_mpl-gallery')
 
 # Restart folder to store the results
 folder = "results"
-if os.path.exists(folder):
-    shutil.rmtree(folder)
-os.makedirs(folder, exist_ok=True)
-os.makedirs(folder+r"\pickle", exist_ok=True)
-os.makedirs(folder+r"\text", exist_ok=True)
-os.makedirs(folder+r"\graphic", exist_ok=True)
+if not os.path.exists(folder): # Create folder if it does not exist
+    os.makedirs(folder, exist_ok=True)
+    os.makedirs(folder+r"\pickle", exist_ok=True)
+    os.makedirs(folder+r"\text", exist_ok=True)
+    os.makedirs(folder+r"\graphic", exist_ok=True) 
+# Delete the files if they exist to overwrite them
+if os.path.exists(folder+rf"\text\result_{iLabel}.txt"):
+    os.remove(folder+rf"\text\result_{iLabel}.txt")
+if os.path.exists(folder+rf"\pickle\result_{iLabel}.pkl"):
+    os.remove(folder+rf"\pickle\result_{iLabel}.pkl")
+if glob.glob(folder+rf"\graphic\*_result_{iLabel}.pkl") != []: 
+    for each in glob.glob(folder+rf"\graphic\*_result_{iLabel}.pkl"):
+        os.remove(each)
 
 
 # This is the best individual among the best individuals from each iteration
@@ -213,7 +221,8 @@ for a in range(nIterations):
     if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor):
         bestOfTheBests = best
 
-    # Serialize best candidate with pickle and save it in a "result" folder
+    # Add the best candidate to the rest of best 
+    # candidates of other iterations to serialize them all together later
     bests.append(best)
     
     # Recording of information regarding this iteration, saved in the "result" folder
@@ -291,7 +300,7 @@ for a in range(nIterations):
     ax[2].set_title("Best Found Schedule")
     ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 
-    path = os.path.join(folder+r"\graphic", f"plot_result_{a+1}.pkl")
+    path = os.path.join(folder+r"\graphic", f"plot_{a+1}_result_{iLabel}.pkl")
     with open(path, 'wb') as file:
         pickle.dump(fig, file)
     

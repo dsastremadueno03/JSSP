@@ -20,7 +20,7 @@ def unpickleInd():
 
 # Unpickle plot a
 def unpicklePlots(a):  
-    path = glob.glob(os.path.join(r"results\graphic", f"plot_result_{a}.pkl"))
+    path = glob.glob(os.path.join(r"results\graphic", f"plot_{a}_*"))
     for file in path:
         with open(file, 'rb') as pickled:
             fig = pickle.load(pickled)
