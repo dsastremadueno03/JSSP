@@ -9,6 +9,7 @@ import pickle # Serialize the best individuals
 import os # Access paths
 import time # Check time of the runtime
 import glob # Access files in the folder with *
+import sys # Access command line arguments
 
 random.seed(4) # Fix the randomness
 
@@ -36,8 +37,66 @@ tasksMachines = [
 mutationProb = 10 # Probability in % to get a mutation in a child
 
 """
+
+# FUNCTIONS
+# Creation of the individual
+def genIndividual(problem):
+    jobs = []
+    #Initialize to 0
+    for i in range(problem.nJobs):
+        jobs.append(0)
+    tasks = []
+    machines = []
+    ids = []
+    for i in range(problem.nTasks):
+        # Choose job to do task from
+        job = random.randint(0, problem.nJobs-1)
+        while problem.jobTasks[job] == jobs[job]: # As long as the job is not complete
+            job = random.randint(0, problem.nJobs-1)
+        tasks.append(job)
+        jobs[job] += 1
+        # Choose machine to do task in
+        machine = random.randint(0, problem.nMachines-1)
+        totalJob = 0
+        for j in range(job):
+            totalJob += problem.jobTasks[j]
+        taskId = totalJob + jobs[job]-1
+        while problem.getData(machine, taskId) == [-1,-1]: # As long as that machine can do the task
+            machine = random.randint(0, problem.nMachines-1)
+        machines.append(machine)
+        ids.append(taskId)
+    individual = Individual(tasks, machines, ids)
+    individual.genSchedule(problem)
+    individual.evaluate(problem)
+    return individual
+
+# Returns the best two individuals in a family of 2 parents and 2 children
+# MODES -> 0: Minimize; 1: Maximize
+# FACTORS -> 0: Tardiness; 1: Energy Consumption
+# bestInGen -> Best individual in the generation
+def getBestTwo(fam, mode, factor, bestInGen):
+    best = bestInGen
+    # Lambda funtion that sorts by the priority attribute first, and then by the secondary. 
+    if factor == 0:
+        fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=(mode == 1))
+    else:
+        fam.sort(key = lambda x: (x.fitness[1], x.fitness[0]), reverse=(mode == 1))
+    result = fam[:2] # Take the best two
+    # Check if the best of the generation is better than the best two of the current family
+    if result[0].isBetter(best, mode, factor):
+        best = result[0]
+    if result[1].isBetter(best, mode, factor):
+        best = result[1]
+    result.append(best) # Add the best individual of the generation
+    return result
+
+
+##################
+###    MAIN    ###
+##################
+
 # Parameter to know which file to read
-iLabel = 59
+iLabel = sys.argv[1] # Get the label of the instance from the command line argument
 
 # RETRIEVE DATA FROM FILES
 
@@ -73,64 +132,12 @@ instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 # Creation of the problem
 PROBLEM = instanceReader.problem #FINAL
-
-# FUNCTIONS
-# Creation of the individual
-def genIndividual(problem):
-    jobs = []
-    #Initialize to 0
-    for i in range(problem.nJobs):
-        jobs.append(0)
-    tasks = []
-    machines = []
-    ids = []
-    for i in range(problem.nTasks):
-        # Choose job to do task from
-        job = random.randint(0, problem.nJobs-1)
-        while problem.jobTasks[job] == jobs[job]: # As long as the job is not complete
-            job = random.randint(0, problem.nJobs-1)
-        tasks.append(job)
-        jobs[job] += 1
-        # Choose machine to do task in
-        machine = random.randint(0, problem.nMachines-1)
-        totalJob = 0
-        for j in range(job):
-            totalJob += problem.jobTasks[j]
-        taskId = totalJob + jobs[job]-1
-        while problem.getData(machine, taskId) == [-1,-1]: # As long as that machine can do the task
-            machine = random.randint(0, problem.nMachines-1)
-        machines.append(machine)
-        ids.append(taskId)
-    individual = Individual(tasks, machines, ids)
-    individual.genSchedule(PROBLEM)
-    individual.evaluate(PROBLEM)
-    return individual
-
-# Returns the best two individuals in a family of 2 parents and 2 children
-# MODES -> 0: Minimize; 1: Maximize
-# FACTORS -> 0: Tardiness; 1: Energy Consumption
-# bestInGen -> Best individual in the generation
-def getBestTwo(fam, mode, factor, bestInGen):
-    best = bestInGen
-    # Lambda funtion that sorts by the priority attribute first, and then by the secondary. 
-    if factor == 0:
-        fam.sort(key = lambda x: (x.fitness[0], x.fitness[1]), reverse=(mode == 1))
-    else:
-        fam.sort(key = lambda x: (x.fitness[1], x.fitness[0]), reverse=(mode == 1))
-    result = fam[:2] # Take the best two
-    # Check if the best of the generation is better than the best two of the current family
-    if result[0].isBetter(best, mode, factor):
-        best = result[0]
-    if result[1].isBetter(best, mode, factor):
-        best = result[1]
-    result.append(best) # Add the best individual of the generation
-    return result
     
 
 
-##################
-###    MAIN    ###
-##################
+###################
+###  ALGORITHM  ###
+###################
 
 N_INDIVIDUALS = PROBLEM.nIndividual
 bests = [] # Store the best individual from each iteration to then pickle the list
