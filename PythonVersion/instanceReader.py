@@ -1,5 +1,6 @@
 from problem import Problem
 import ast # Automatic conversion of data
+import glob # For the path of the instance file
 
 class InstanceReader:
 
@@ -19,7 +20,7 @@ class InstanceReader:
     # jobTasks
     def readInstance(self):
         data = []
-        f = open(self.pathIntances, 'r')
+        f = open(glob.glob(self.pathIntances)[0], 'r')
         lines = [line.strip() for line in f.readlines()] # Read all lines and remove the \n
         f.close()
         for line in lines:

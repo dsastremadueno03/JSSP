@@ -7,7 +7,6 @@ import random # Randomize creation of individuals and other decisions
 import pandas as pd # Export data as csv
 import pickle # Serialize the best individuals
 import os # Access paths
-import shutil # Delete the whole result file
 import time # Check time of the runtime
 import glob # Access files in the folder with *
 
@@ -37,21 +36,30 @@ tasksMachines = [
 mutationProb = 10 # Probability in % to get a mutation in a child
 
 """
-# Parameters to know which file to read
+# Parameter to know which file to read
 iLabel = 59
-iJob = 10
-iMachine = 10
 
 # RETRIEVE DATA FROM FILES
-instanceReader = InstanceReader(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared.data", fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", fr"passive_energy\passive_energy_{iMachine}machines.txt", r"mutation_prob_genetic_parameters.txt")
+
+# Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
+# (They contain variables in the name)
+instanceReader = InstanceReader(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_*", "", r"TOU prices\TOU prices\TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
+instanceReader.transformInstanceData(dataInstance)
+
+# Now we know machine number and job number, we can read the rest of the files
+iJob = instanceReader.problem.nJobs # Number of jobs
+iMachine = instanceReader.problem.nMachines # Number of machines
+instanceReader.pathPreparedJobs = fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared_JOBS.data"
+instanceReader.pathPassiveEnergy = fr"passive_energy\passive_energy_{iMachine}machines.txt"
+
 dataPreparedJobs = instanceReader.readPreparedJobs()
 dataTOUPrices = instanceReader.readTOUPrices()
 dataPassiveEnergy = instanceReader.readPassiveEnergy()
 dataMutationProb = instanceReader.readMutationProb()
-instanceReader.transformInstanceData(dataInstance)
+
 instanceReader.transformPreparedJobsData(dataPreparedJobs)
 instanceReader.transformTOUPricesData(dataTOUPrices)
 instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
