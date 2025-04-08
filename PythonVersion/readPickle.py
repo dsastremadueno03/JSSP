@@ -5,19 +5,20 @@ import matplotlib.pyplot as plt # Show the result plots
 
 # Unpickle individuals
 def unpickleInd():
-    individuals = []
+    bestInd = [] # List of individuals
     i = 1
     # Stores the individuals in the folder "results"
     path = glob.glob(os.path.join(r"results\pickle", "*.pkl"))
     for file in path:
         with open(file, 'rb') as pickled:
             bestInd = pickle.load(pickled)
-            print("Individual", i)
-            print(bestInd)
-            i += 1
-            individuals.append(bestInd)
+            for ind in bestInd:
+                print("Individual", i)
+                print(ind)
+                i += 1
+    return bestInd
 
-# Unpickle plots
+# Unpickle plot a
 def unpicklePlots(a):  
     path = glob.glob(os.path.join(r"results\graphic", f"plot_result_{a}.pkl"))
     for file in path:
@@ -25,4 +26,5 @@ def unpicklePlots(a):
             fig = pickle.load(pickled)
     plt.show()
         
-unpicklePlots(10)
+
+unpickleInd()

@@ -124,6 +124,7 @@ def getBestTwo(fam, mode, factor, bestInGen):
 ##################
 
 N_INDIVIDUALS = PROBLEM.nIndividual
+bests = [] # Store the best individual from each iteration to then pickle the list
 totalExecutionTime = 0.0
 
 plt.style.use('_mpl-gallery')
@@ -213,14 +214,12 @@ for a in range(nIterations):
         bestOfTheBests = best
 
     # Serialize best candidate with pickle and save it in a "result" folder
-    path = os.path.join(folder+r"\pickle", f"result_{a+1}.pkl")
-    with open(path, 'wb') as file: 
-        pickle.dump(best, file)
+    bests.append(best)
     
     # Recording of information regarding this iteration, saved in the "result" folder
-    path = os.path.join(folder+r"\text", f"result_{a+1}.txt")
-    with open(path, 'w') as file: 
-        print(f"\nITERATION {a+1}\n\n", file=file)
+    path = os.path.join(folder+r"\text", f"result_{iLabel}.txt")
+    with open(path, 'a') as file: 
+        print(f"\nITERATION {a+1}\n", file=file)
         print("BEST:", file=file)
         print(best, file=file)
         print(best.schedule.startTimeTasks, file=file)
@@ -229,6 +228,7 @@ for a in range(nIterations):
         print("Energy Consumption: " + str(best.fitness[1]), file=file)
         print("Number of generations: " + str(N_GENERATIONS), file=file)
         print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
+        print("\n\n", file=file)
         
     # Saving the graphic results as pickle in the "result folder"
     axisValue = []
@@ -297,14 +297,22 @@ for a in range(nIterations):
     
 best = bestOfTheBests
 # Register the best out of the best individuals for each of the iterations
-path = os.path.join(folder+r"\text", f"best_out_of_all.txt")
-with open(path, 'w') as file: 
-    print("BEST:", file=file)        
+path = os.path.join(folder+r"\text", f"result_{iLabel}.txt")
+with open(path, 'a') as file: 
+    print(f"\nSUMMARY\n\n", file=file)
+    print("GLOBAL BEST:", file=file)        
     print(best, file=file)
     print(best.schedule.startTimeTasks, file=file)
     print(best.schedule.endTimeTasks, file=file)
     print("Tardiness: " + str(best.fitness[0]), file=file)
     print("Energy Consumption: " + str(best.fitness[1]), file=file)
+    print("\n\nTotal execution time (s)", file=file)
+    print(totalExecutionTime, file=file)
+
+# Save the best individuals in a pickle file
+path = os.path.join(folder+r"\pickle", f"result_{iLabel}.pkl")
+with open(path, 'wb') as file: 
+    pickle.dump(bests, file)
 
 print("Execution time (s)")
 print(totalExecutionTime)
