@@ -91,6 +91,7 @@ def getBestTwo(fam, mode, factor, bestInGen):
     return result
 
 
+
 ##################
 ###    MAIN    ###
 ##################
