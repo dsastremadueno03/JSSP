@@ -1,0 +1,165 @@
+
+ITERATION 1
+
+BEST:
+[0, 0, 1, 0, 0, 1, 0]
+[0, 1, 1, 0, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.8453333333326
+Number of generations: 18
+Calculation time of this iteration (s): 0.7946720123291016
+
+
+
+
+ITERATION 2
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 16
+Calculation time of this iteration (s): 0.6989452838897705
+
+
+
+
+ITERATION 3
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 20
+Calculation time of this iteration (s): 0.7457480430603027
+
+
+
+
+ITERATION 4
+
+BEST:
+[0, 0, 1, 0, 0, 1, 0]
+[0, 1, 1, 0, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.8453333333326
+Number of generations: 18
+Calculation time of this iteration (s): 0.7964920997619629
+
+
+
+
+ITERATION 5
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 19
+Calculation time of this iteration (s): 0.7703356742858887
+
+
+
+
+ITERATION 6
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 16
+Calculation time of this iteration (s): 0.7423806190490723
+
+
+
+
+ITERATION 7
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 17
+Calculation time of this iteration (s): 0.7648904323577881
+
+
+
+
+ITERATION 8
+
+BEST:
+[0, 0, 1, 0, 0, 1, 0]
+[0, 1, 1, 0, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.8453333333326
+Number of generations: 16
+Calculation time of this iteration (s): 0.793705940246582
+
+
+
+
+ITERATION 9
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 16
+Calculation time of this iteration (s): 0.620708703994751
+
+
+
+
+ITERATION 10
+
+BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+Number of generations: 17
+Calculation time of this iteration (s): 0.6223270893096924
+
+
+
+
+SUMMARY
+
+
+GLOBAL BEST:
+[0, 0, 0, 1, 0, 1, 0]
+[0, 1, 0, 1, 1, 0, 0]
+[0, 110, 140, 250, 420, 140, 250]
+[110, 140, 240, 370, 460, 250, 420]
+Tardiness: 0
+Energy Consumption: 240.7626666666659
+
+
+Total execution time (s)
+7.350205898284912

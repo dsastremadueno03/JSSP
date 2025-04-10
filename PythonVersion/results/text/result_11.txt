@@ -1,0 +1,165 @@
+
+ITERATION 1
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.7011940479278564
+
+
+
+
+ITERATION 2
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.6948418617248535
+
+
+
+
+ITERATION 3
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.646451473236084
+
+
+
+
+ITERATION 4
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.5180070400238037
+
+
+
+
+ITERATION 5
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 18
+Calculation time of this iteration (s): 0.6460084915161133
+
+
+
+
+ITERATION 6
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 19
+Calculation time of this iteration (s): 0.7499306201934814
+
+
+
+
+ITERATION 7
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.5631482601165771
+
+
+
+
+ITERATION 8
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 16
+Calculation time of this iteration (s): 0.653160810470581
+
+
+
+
+ITERATION 9
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 18
+Calculation time of this iteration (s): 0.6567542552947998
+
+
+
+
+ITERATION 10
+
+BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+Number of generations: 18
+Calculation time of this iteration (s): 0.6347155570983887
+
+
+
+
+SUMMARY
+
+
+GLOBAL BEST:
+[0, 0, 1, 0, 0]
+[0, 0, 1, 1, 2]
+[0, 10, 170, 320, 0]
+[10, 140, 320, 410, 170]
+Tardiness: 0
+Energy Consumption: 166.76000000000036
+
+
+Total execution time (s)
+6.464212417602539

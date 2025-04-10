@@ -20,7 +20,7 @@ class InstanceReader:
     # jobTasks
     def readInstance(self):
         data = []
-        f = open(glob.glob(self.pathIntances)[0], 'r')
+        f = open(self.pathIntances, 'r')
         lines = [line.strip() for line in f.readlines()] # Read all lines and remove the \n
         f.close()
         for line in lines:
@@ -157,6 +157,7 @@ class InstanceReader:
         self.problem.nIndividual = data[2]
         return data[3], data[4], data[5] # Returns the number of iterations per instance to the main directly
     
+"""
 print("TEST")
 instanceReader = InstanceReader(r"instances_new/instances_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new/preparedjobs_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices/TOU prices/TOU_prices_v1", r"passive_energy/passive_energy_3machines.txt", r"mutation_prob.txt")
 
@@ -167,7 +168,7 @@ dataTOUPrices = instanceReader.readTOUPrices()
 instanceReader.transformInstanceData(dataInstance)
 instanceReader.transformPreparedJobsData(dataPreparedJobs)
 instanceReader.transformTOUPricesData(dataTOUPrices)
-
+"""
 
 
 

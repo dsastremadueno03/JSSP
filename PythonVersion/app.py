@@ -97,250 +97,256 @@ def getBestTwo(fam, mode, factor, bestInGen):
 ###    MAIN    ###
 ##################
 
-# Parameter to know which file to read
-iLabel = sys.argv[1] # Get the label of the instance from the command line argument
+for i in range(1, 61):
 
-# RETRIEVE DATA FROM FILES
+    # Parameter to know which file to read
+    iLabel = i # Get the label of the instance from the command line argument
+    print("Instance " + str(iLabel) + " in progress...")
 
-# Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
-# (They contain variables in the name)
-instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
+    # RETRIEVE DATA FROM FILES
 
-# Read and assign data retrieved to the problem
-dataInstance = instanceReader.readInstance()
-instanceReader.transformInstanceData(dataInstance)
+    # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
+    # (They contain variables in the name)
+    instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
 
-# Now we know machine number and job number, we can read the rest of the files
-iJob = instanceReader.problem.nJobs # Number of jobs
-iMachine = instanceReader.problem.nMachines # Number of machines
-instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new/preparedjobs_new/flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
-instanceReader.pathPassiveEnergy = fr"passive_energy/passive_energy_{iMachine}machines.txt"
+    # Read and assign data retrieved to the problem
+    dataInstance = instanceReader.readInstance()
+    instanceReader.transformInstanceData(dataInstance)
 
-dataPreparedJobs = instanceReader.readPreparedJobs()
-dataTOUPrices = instanceReader.readTOUPrices()
-dataPassiveEnergy = instanceReader.readPassiveEnergy()
-dataMutationProb = instanceReader.readMutationProb()
+    # Now we know machine number and job number, we can read the rest of the files
+    iJob = instanceReader.problem.nJobs # Number of jobs
+    iMachine = instanceReader.problem.nMachines # Number of machines
+    instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new/preparedjobs_new/flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
+    instanceReader.pathPassiveEnergy = fr"passive_energy/passive_energy_{iMachine}machines.txt"
 
-instanceReader.transformPreparedJobsData(dataPreparedJobs)
-instanceReader.transformTOUPricesData(dataTOUPrices)
-instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
-# Store the number of iterations per instance (repetitions of the algorithm)
-# MODE -> 0: Minimize; 1: Maximize
-# FACTOR -> 0: Tardiness; 1: Energy Cost
-nIterations, mode, factor = instanceReader.transformMutationProbData(dataMutationProb)
+    dataPreparedJobs = instanceReader.readPreparedJobs()
+    dataTOUPrices = instanceReader.readTOUPrices()
+    dataPassiveEnergy = instanceReader.readPassiveEnergy()
+    dataMutationProb = instanceReader.readMutationProb()
 
-### FOR COMPARING RESULTS ONLY
+    instanceReader.transformPreparedJobsData(dataPreparedJobs)
+    instanceReader.transformTOUPricesData(dataTOUPrices)
+    instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
+    # Store the number of iterations per instance (repetitions of the algorithm)
+    # MODE -> 0: Minimize; 1: Maximize
+    # FACTOR -> 0: Tardiness; 1: Energy Cost
+    nIterations, mode, factor = instanceReader.transformMutationProbData(dataMutationProb)
 
-# Creation of the problem
-PROBLEM = instanceReader.problem #FINAL
-    
+    ### FOR COMPARING RESULTS ONLY
+    #instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-
-###################
-###  ALGORITHM  ###
-###################
-
-N_INDIVIDUALS = PROBLEM.nIndividual
-bests = [] # Store the best individual from each iteration to then pickle the list
-totalExecutionTime = 0.0
-
-plt.style.use('_mpl-gallery')
-
-# Restart folder to store the results
-folder = "results"
-if not os.path.exists(folder): # Create folder if it does not exist
-    os.makedirs(folder, exist_ok=True)
-    os.makedirs(folder+r"/pickle", exist_ok=True)
-    os.makedirs(folder+r"/text", exist_ok=True)
-    os.makedirs(folder+r"/graphic", exist_ok=True) 
-# Delete the files if they exist to overwrite them
-if os.path.exists(folder+rf"/text/result_{iLabel}.txt"):
-    os.remove(folder+rf"/text/result_{iLabel}.txt")
-if os.path.exists(folder+rf"/pickle/result_{iLabel}.pkl"):
-    os.remove(folder+rf"/pickle/result_{iLabel}.pkl")
-if glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl") != []: 
-    for each in glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl"):
-        os.remove(each)
-
-
-# This is the best individual among the best individuals from each iteration
-bestOfTheBests = None
-
-for a in range(nIterations):
-    currentGeneration = []
-    nextGeneration = []
-    fitnessTimePlot = []
-    fitnessEnergyPlot = []
-    
-    # Starts clock on this iteration
-    initIter = time.time()
-
-    # 1st -> Create initial pairs of individuals
-
-    for i in range(N_INDIVIDUALS//2):
+    # Creation of the problem
+    PROBLEM = instanceReader.problem #FINAL
         
-        family = [genIndividual(PROBLEM), genIndividual(PROBLEM)]
-        bestInGen = family[0]
-        currentGeneration.append(family)
 
-    # Counter for the threshold for the algorithm to stop
-    nGenWithoutImprovement = 0
-    gen = 0 # Generation counter
-    
-    # Start genetic algorithm and stop when there is no improvement in whatever the mutation_prob file states generations
-    while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
-        print("Generation " + str(gen) + " in progress...")
-        lastBest = bestInGen
-        # 2nd -> Create children and evaluate
-        for family in currentGeneration:
-            family.append(family[0].merge(family[1], PROBLEM))
-            family.append(family[1].merge(family[0], PROBLEM))
-            best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness
+
+    ###################
+    ###  ALGORITHM  ###
+    ###################
+
+    N_INDIVIDUALS = PROBLEM.nIndividual
+    bests = [] # Store the best individual from each iteration to then pickle the list
+    totalExecutionTime = 0.0
+
+    plt.style.use('_mpl-gallery')
+
+    # Restart folder to store the results
+    folder = "results"
+    if not os.path.exists(folder): # Create folder if it does not exist
+        os.makedirs(folder, exist_ok=True)
+        os.makedirs(folder+r"/pickle", exist_ok=True)
+        os.makedirs(folder+r"/text", exist_ok=True)
+        os.makedirs(folder+r"/graphic", exist_ok=True) 
+    # Delete the files if they exist to overwrite them
+    if os.path.exists(folder+rf"/text/result_{iLabel}.txt"):
+        os.remove(folder+rf"/text/result_{iLabel}.txt")
+    if os.path.exists(folder+rf"/pickle/result_{iLabel}.pkl"):
+        os.remove(folder+rf"/pickle/result_{iLabel}.pkl")
+    if glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl") != []: 
+        for each in glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl"):
+            os.remove(each)
+
+
+    # This is the best individual among the best individuals from each iteration
+    bestOfTheBests = None
+
+    for a in range(nIterations):
+        currentGeneration = []
+        nextGeneration = []
+        fitnessTimePlot = []
+        fitnessEnergyPlot = []
+        
+        # Starts clock on this iteration
+        initIter = time.time()
+
+        # 1st -> Create initial pairs of individuals
+
+        for i in range(N_INDIVIDUALS//2):
             
-        # Check if it is the best of the generation
-            bestInGen = best[2] # Updates the best individual in the current generation
+            family = [genIndividual(PROBLEM), genIndividual(PROBLEM)]
+            bestInGen = family[0]
+            currentGeneration.append(family)
+
+        # Counter for the threshold for the algorithm to stop
+        nGenWithoutImprovement = 0
+        gen = 0 # Generation counter
+        
+        # Start genetic algorithm and stop when there is no improvement in whatever the mutation_prob file states generations
+        while(nGenWithoutImprovement < PROBLEM.thresholdGenetic):
+            print("Generation " + str(gen) + " in progress...")
+            lastBest = bestInGen
+            # 2nd -> Create children and evaluate
+            for family in currentGeneration:
+                family.append(family[0].merge(family[1], PROBLEM))
+                family.append(family[1].merge(family[0], PROBLEM))
+                best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness
+                
+            # Check if it is the best of the generation
+                bestInGen = best[2] # Updates the best individual in the current generation
+                
+            # 3rd -> Add to new generation the best two per family
+
+                nextGeneration.append(best[0])
+                nextGeneration.append(best[1])
+                
+            # See if there was improvement
+            if bestInGen == lastBest:
+                nGenWithoutImprovement += 1
+            else:
+                nGenWithoutImprovement = 0
+                
+            # 4th -> Shuffle generation (different genes) and join in pairs again  
+            random.shuffle(nextGeneration)
+            currentGeneration.clear()
+            for i in range(0, N_INDIVIDUALS, 2):
+                currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
+            nextGeneration.clear()
+            gen += 1
+
+        # Show best individual obtained by tardiness and energy cost separately
+            fitnessTimePlot.append(bestInGen.fitness[0])
+            fitnessEnergyPlot.append(bestInGen.fitness[1])
+        
+        # Stops the clock for this iteration
+        endIter = time.time()
+        totalExecutionTime += (endIter - initIter) # Add to the total time
+        # Save total number of generations
+        N_GENERATIONS = gen
+
+        # Best individual data    
+        best = bestInGen
+        
+        # If the best of this generation is better than the best registered for this instance 
+        # or the latter is None, update
+        if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor):
+            bestOfTheBests = best
+
+        # Add the best candidate to the rest of best 
+        # candidates of other iterations to serialize them all together later
+        bests.append(best)
+        
+        # Recording of information regarding this iteration, saved in the "result" folder
+        path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
+        with open(path, 'a') as file: 
+            print(f"\nITERATION {a+1}\n", file=file)
+            print("BEST:", file=file)
+            print(best, file=file)
+            print(best.schedule.startTimeTasks, file=file)
+            print(best.schedule.endTimeTasks, file=file)
+            print("Tardiness: " + str(best.fitness[0]), file=file)
+            print("Energy Consumption: " + str(best.fitness[1]), file=file)
+            print("Number of generations: " + str(N_GENERATIONS), file=file)
+            print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
+            print("\n\n", file=file)
             
-        # 3rd -> Add to new generation the best two per family
+        # Saving the graphic results as pickle in the "result folder"
+        axisValue = []
+        for i in range(N_GENERATIONS):
+            axisValue.append(int(i+1))
 
-            nextGeneration.append(best[0])
-            nextGeneration.append(best[1])
+        fig, ax = plt.subplots(1, 3, figsize=(10, 6))
+        colors = plt.get_cmap("tab10", PROBLEM.nMachines)
+        ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
+        ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
+        ax[0].set_xlabel('Generation')
+        ax[0].set_ylabel('Tardiness (min)')
+        ax[0].set_title('Evolution of tardiness')
+
+        ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
+        ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
+        ax[1].set_xlabel('Generation')
+        ax[1].set_ylabel('Energy Cost (€)')
+        ax[1].set_title('Evolution of energy cost')
+
+        # Plot of schedule
+
+        y_pos = []
+        durations = []
+        machine_labels = []
+        tasks = []
+        start_times = []
+
+        for i in range(PROBLEM.nMachines):
+            y_pos.append(i)
+
+        for task in range(PROBLEM.nTasks):
+            if best.schedule.startTimeTasks[task] != -1:
+                start = best.schedule.startTimeTasks[task]
+                end = best.schedule.endTimeTasks[task]
+                duration = end - start
+
+                start_times.append(start)
+                durations.append(duration)
+                tasks.append(f"T{task}")  # Task tag
+                indexMachine = best.idPermutation.index(task)
+                machine_labels.append(best.machinePermutation[indexMachine])  # Assigned machine
+
+        for i in range(PROBLEM.nTasks):
+            ax[2].barh(machine_labels[i], durations[i], left=start_times[i], 
+                        color=colors(machine_labels[i] % PROBLEM.nMachines), edgecolor="black")
             
-        # See if there was improvement
-        if bestInGen == lastBest:
-            nGenWithoutImprovement += 1
-        else:
-            nGenWithoutImprovement = 0
-            
-        # 4th -> Shuffle generation (different genes) and join in pairs again  
-        random.shuffle(nextGeneration)
-        currentGeneration.clear()
-        for i in range(0, N_INDIVIDUALS, 2):
-            currentGeneration.append([nextGeneration[i], nextGeneration[i+1]])
-        nextGeneration.clear()
-        gen += 1
+            # Label each task in the middle of the bar
+            ax[2].text(start_times[i] + durations[i] / 2, machine_labels[i], tasks[i], 
+                    va="center", ha="center", color="white")
 
-    # Show best individual obtained by tardiness and energy cost separately
-        fitnessTimePlot.append(bestInGen.fitness[0])
-        fitnessEnergyPlot.append(bestInGen.fitness[1])
-    
-    # Stops the clock for this iteration
-    endIter = time.time()
-    totalExecutionTime += (endIter - initIter) # Add to the total time
-    # Save total number of generations
-    N_GENERATIONS = gen
+        # Setting plot info
+        ax[2].set_xlabel("Time (h)")
+        ax[2].set_ylabel("Machines")
 
-    # Best individual data    
-    best = bestInGen
-    
-    # If the best of this generation is better than the best registered for this instance 
-    # or the latter is None, update
-    if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor):
-        bestOfTheBests = best
+        # Ensure only the 3 machines appear on the y-axis
+        ax[2].set_yticks(range(PROBLEM.nMachines))  
+        ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
 
-    # Add the best candidate to the rest of best 
-    # candidates of other iterations to serialize them all together later
-    bests.append(best)
-    
-    # Recording of information regarding this iteration, saved in the "result" folder
+        ax[2].set_title("Best Found Schedule")
+        ax[2].grid(axis="x", linestyle="--", alpha=0.7)
+
+        path = os.path.join(folder+r"/graphic", f"plot_{a+1}_result_{iLabel}.pkl")
+        with open(path, 'wb') as file:
+            pickle.dump(fig, file)
+        plt.close(fig) # Close the figure to avoid memory issues
+        
+        
+    best = bestOfTheBests
+    # Register the best out of the best individuals for each of the iterations
     path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
     with open(path, 'a') as file: 
-        print(f"\nITERATION {a+1}\n", file=file)
-        print("BEST:", file=file)
+        print(f"\nSUMMARY\n\n", file=file)
+        print("GLOBAL BEST:", file=file)        
         print(best, file=file)
         print(best.schedule.startTimeTasks, file=file)
         print(best.schedule.endTimeTasks, file=file)
         print("Tardiness: " + str(best.fitness[0]), file=file)
         print("Energy Consumption: " + str(best.fitness[1]), file=file)
-        print("Number of generations: " + str(N_GENERATIONS), file=file)
-        print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
-        print("\n\n", file=file)
-        
-    # Saving the graphic results as pickle in the "result folder"
-    axisValue = []
-    for i in range(N_GENERATIONS):
-        axisValue.append(int(i+1))
+        print("\n\nTotal execution time (s)", file=file)
+        print(totalExecutionTime, file=file)
 
-    fig, ax = plt.subplots(1, 3, figsize=(10, 6))
-    colors = plt.get_cmap("tab10", PROBLEM.nMachines)
-    ax[0].plot(axisValue, fitnessTimePlot, 'o-', linewidth=2, color='b')
-    ax[0].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessTimePlot)+2))
-    ax[0].set_xlabel('Generation')
-    ax[0].set_ylabel('Tardiness (min)')
-    ax[0].set_title('Evolution of tardiness')
+    # Save the best individuals in a pickle file
+    path = os.path.join(folder+r"/pickle", f"result_{iLabel}.pkl")
+    with open(path, 'wb') as file: 
+        pickle.dump(bests, file)
 
-    ax[1].plot(axisValue, fitnessEnergyPlot, 'o-', linewidth=2, color='r')
-    ax[1].set(xlim=(0, N_GENERATIONS+2), ylim=(0, max(fitnessEnergyPlot)+200))
-    ax[1].set_xlabel('Generation')
-    ax[1].set_ylabel('Energy Cost (€)')
-    ax[1].set_title('Evolution of energy cost')
-
-    # Plot of schedule
-
-    y_pos = []
-    durations = []
-    machine_labels = []
-    tasks = []
-    start_times = []
-
-    for i in range(PROBLEM.nMachines):
-        y_pos.append(i)
-
-    for task in range(PROBLEM.nTasks):
-        if best.schedule.startTimeTasks[task] != -1:
-            start = best.schedule.startTimeTasks[task]
-            end = best.schedule.endTimeTasks[task]
-            duration = end - start
-
-            start_times.append(start)
-            durations.append(duration)
-            tasks.append(f"T{task}")  # Task tag
-            indexMachine = best.idPermutation.index(task)
-            machine_labels.append(best.machinePermutation[indexMachine])  # Assigned machine
-
-    for i in range(PROBLEM.nTasks):
-        ax[2].barh(machine_labels[i], durations[i], left=start_times[i], 
-                    color=colors(machine_labels[i] % PROBLEM.nMachines), edgecolor="black")
-        
-        # Label each task in the middle of the bar
-        ax[2].text(start_times[i] + durations[i] / 2, machine_labels[i], tasks[i], 
-                va="center", ha="center", color="white")
-
-    # Setting plot info
-    ax[2].set_xlabel("Time (h)")
-    ax[2].set_ylabel("Machines")
-
-    # Ensure only the 3 machines appear on the y-axis
-    ax[2].set_yticks(range(PROBLEM.nMachines))  
-    ax[2].set_yticklabels([f"M{i}" for i in range(PROBLEM.nMachines)])
-
-    ax[2].set_title("Best Found Schedule")
-    ax[2].grid(axis="x", linestyle="--", alpha=0.7)
-
-    path = os.path.join(folder+r"/graphic", f"plot_{a+1}_result_{iLabel}.pkl")
-    with open(path, 'wb') as file:
-        pickle.dump(fig, file)
-    
-best = bestOfTheBests
-# Register the best out of the best individuals for each of the iterations
-path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
-with open(path, 'a') as file: 
-    print(f"\nSUMMARY\n\n", file=file)
-    print("GLOBAL BEST:", file=file)        
-    print(best, file=file)
-    print(best.schedule.startTimeTasks, file=file)
-    print(best.schedule.endTimeTasks, file=file)
-    print("Tardiness: " + str(best.fitness[0]), file=file)
-    print("Energy Consumption: " + str(best.fitness[1]), file=file)
-    print("\n\nTotal execution time (s)", file=file)
-    print(totalExecutionTime, file=file)
-
-# Save the best individuals in a pickle file
-path = os.path.join(folder+r"/pickle", f"result_{iLabel}.pkl")
-with open(path, 'wb') as file: 
-    pickle.dump(bests, file)
-
-print("Execution time (s)")
-print(totalExecutionTime)
+    print("Execution time (s)")
+    print(totalExecutionTime)
 
 """
 # Plot of fitness evolution
