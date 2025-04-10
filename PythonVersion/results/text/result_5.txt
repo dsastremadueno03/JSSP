@@ -1,0 +1,165 @@
+
+ITERATION 1
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.49794840812683105
+
+
+
+
+ITERATION 2
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 15
+Calculation time of this iteration (s): 0.25307250022888184
+
+
+
+
+ITERATION 3
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.3073854446411133
+
+
+
+
+ITERATION 4
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.34271979331970215
+
+
+
+
+ITERATION 5
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.32479166984558105
+
+
+
+
+ITERATION 6
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.25473737716674805
+
+
+
+
+ITERATION 7
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.45027709007263184
+
+
+
+
+ITERATION 8
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.3697242736816406
+
+
+
+
+ITERATION 9
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.27266430854797363
+
+
+
+
+ITERATION 10
+
+BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+Number of generations: 16
+Calculation time of this iteration (s): 0.27524852752685547
+
+
+
+
+SUMMARY
+
+
+GLOBAL BEST:
+[1, 2, 0, 1]
+[1, 1, 1, 0]
+[230, 0, 110, 110]
+[280, 110, 250, 230]
+Tardiness: 0
+Energy Consumption: 185.57350000000082
+
+
+Total execution time (s)
+3.348569393157959

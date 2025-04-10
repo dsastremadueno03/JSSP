@@ -10,7 +10,7 @@ import os # Access paths
 import time # Check time of the runtime
 import glob # Access files in the folder with *
 import sys # Access command line arguments
-
+from pathlib import Path # Access paths through different OS
 
 random.seed(4) # Fix the randomness
 
@@ -104,7 +104,7 @@ iLabel = sys.argv[1] # Get the label of the instance from the command line argum
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
 # (They contain variables in the name)
-instanceReader = InstanceReader(glob.glob(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices\TOU prices\TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
+instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -113,8 +113,8 @@ instanceReader.transformInstanceData(dataInstance)
 # Now we know machine number and job number, we can read the rest of the files
 iJob = instanceReader.problem.nJobs # Number of jobs
 iMachine = instanceReader.problem.nMachines # Number of machines
-instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
-instanceReader.pathPassiveEnergy = fr"passive_energy\passive_energy_{iMachine}machines.txt"
+instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new/preparedjobs_new/flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
+instanceReader.pathPassiveEnergy = fr"passive_energy/passive_energy_{iMachine}machines.txt"
 
 dataPreparedJobs = instanceReader.readPreparedJobs()
 dataTOUPrices = instanceReader.readTOUPrices()
@@ -130,7 +130,6 @@ instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
 nIterations, mode, factor = instanceReader.transformMutationProbData(dataMutationProb)
 
 ### FOR COMPARING RESULTS ONLY
-instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 # Creation of the problem
 PROBLEM = instanceReader.problem #FINAL
@@ -151,16 +150,16 @@ plt.style.use('_mpl-gallery')
 folder = "results"
 if not os.path.exists(folder): # Create folder if it does not exist
     os.makedirs(folder, exist_ok=True)
-    os.makedirs(folder+r"\pickle", exist_ok=True)
-    os.makedirs(folder+r"\text", exist_ok=True)
-    os.makedirs(folder+r"\graphic", exist_ok=True) 
+    os.makedirs(folder+r"/pickle", exist_ok=True)
+    os.makedirs(folder+r"/text", exist_ok=True)
+    os.makedirs(folder+r"/graphic", exist_ok=True) 
 # Delete the files if they exist to overwrite them
-if os.path.exists(folder+rf"\text\result_{iLabel}.txt"):
-    os.remove(folder+rf"\text\result_{iLabel}.txt")
-if os.path.exists(folder+rf"\pickle\result_{iLabel}.pkl"):
-    os.remove(folder+rf"\pickle\result_{iLabel}.pkl")
-if glob.glob(folder+rf"\graphic\*_result_{iLabel}.pkl") != []: 
-    for each in glob.glob(folder+rf"\graphic\*_result_{iLabel}.pkl"):
+if os.path.exists(folder+rf"/text/result_{iLabel}.txt"):
+    os.remove(folder+rf"/text/result_{iLabel}.txt")
+if os.path.exists(folder+rf"/pickle/result_{iLabel}.pkl"):
+    os.remove(folder+rf"/pickle/result_{iLabel}.pkl")
+if glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl") != []: 
+    for each in glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl"):
         os.remove(each)
 
 
@@ -243,7 +242,7 @@ for a in range(nIterations):
     bests.append(best)
     
     # Recording of information regarding this iteration, saved in the "result" folder
-    path = os.path.join(folder+r"\text", f"result_{iLabel}.txt")
+    path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
     with open(path, 'a') as file: 
         print(f"\nITERATION {a+1}\n", file=file)
         print("BEST:", file=file)
@@ -317,13 +316,13 @@ for a in range(nIterations):
     ax[2].set_title("Best Found Schedule")
     ax[2].grid(axis="x", linestyle="--", alpha=0.7)
 
-    path = os.path.join(folder+r"\graphic", f"plot_{a+1}_result_{iLabel}.pkl")
+    path = os.path.join(folder+r"/graphic", f"plot_{a+1}_result_{iLabel}.pkl")
     with open(path, 'wb') as file:
         pickle.dump(fig, file)
     
 best = bestOfTheBests
 # Register the best out of the best individuals for each of the iterations
-path = os.path.join(folder+r"\text", f"result_{iLabel}.txt")
+path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
 with open(path, 'a') as file: 
     print(f"\nSUMMARY\n\n", file=file)
     print("GLOBAL BEST:", file=file)        
@@ -336,7 +335,7 @@ with open(path, 'a') as file:
     print(totalExecutionTime, file=file)
 
 # Save the best individuals in a pickle file
-path = os.path.join(folder+r"\pickle", f"result_{iLabel}.pkl")
+path = os.path.join(folder+r"/pickle", f"result_{iLabel}.pkl")
 with open(path, 'wb') as file: 
     pickle.dump(bests, file)
 

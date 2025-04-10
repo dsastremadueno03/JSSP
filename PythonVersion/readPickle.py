@@ -8,7 +8,7 @@ def unpickleInd():
     bestInd = [] # List of individuals
     i = 1
     # Stores the individuals in the folder "results"
-    path = glob.glob(os.path.join(r"results\pickle", "*.pkl"))
+    path = glob.glob(os.path.join(r"results/pickle", "*.pkl"))
     for file in path:
         with open(file, 'rb') as pickled:
             bestInd = pickle.load(pickled)
@@ -20,7 +20,7 @@ def unpickleInd():
 
 # Unpickle plot a
 def unpicklePlots(a):  
-    path = glob.glob(os.path.join(r"results\graphic", f"plot_{a}_*"))
+    path = glob.glob(os.path.join(r"results/graphic", f"plot_{a}_*"))
     for file in path:
         with open(file, 'rb') as pickled:
             fig = pickle.load(pickled)

@@ -120,7 +120,7 @@ class InstanceReader:
                         machineId = machine[0]
                         if machineId not in setPossibleMachines: # There are multiple options in the input file (just take first one)
                             duration = machine[1]
-                            energy = machine[2] / 100
+                            energy = machine[2] / 100 # Values were converted to a higher scale in the input file
                             param = [duration, energy]
                             self.problem.tasksMachines[machineId].append(param)
                             setPossibleMachines.append(machineId)
@@ -145,7 +145,10 @@ class InstanceReader:
         
     # Transform the passive energy data and assign it to the problem
     def transformPassiveEnergyData(self, data):
-        self.problem.passiveEnergy = data
+        passiveEnergy = []
+        for i in range(len(data)):
+            passiveEnergy.append(data[i]/100) # Values were converted to a higher scale in the input file
+        self.problem.passiveEnergy = passiveEnergy
         
     # Transform the mutation probability data and assign it to the problem
     def transformMutationProbData(self, data):
@@ -155,7 +158,7 @@ class InstanceReader:
         return data[3], data[4], data[5] # Returns the number of iterations per instance to the main directly
     
 print("TEST")
-instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob.txt")
+instanceReader = InstanceReader(r"instances_new/instances_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new/preparedjobs_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices/TOU prices/TOU_prices_v1", r"passive_energy/passive_energy_3machines.txt", r"mutation_prob.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()

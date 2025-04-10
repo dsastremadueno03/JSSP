@@ -4,7 +4,7 @@ from problem import Problem
 from schedule import Schedule
 import random
 
-instanceReader = InstanceReader(r"instances_new\instances_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new\preparedjobs_new\flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices\TOU prices\TOU_prices_v1", r"passive_energy\passive_energy_3machines.txt", r"mutation_prob_genetic_parameters.txt")
+instanceReader = InstanceReader(r"instances_new/instances_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared.data", r"preparedjobs_new/preparedjobs_new/flexible_jobshop_7_2jobs_3machines_flex_high_squared_JOBS.data", r"TOU prices/TOU prices/TOU_prices_v1", r"passive_energy/passive_energy_3machines.txt", r"mutation_prob_genetic_parameters.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
