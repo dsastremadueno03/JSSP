@@ -11,6 +11,7 @@ import time # Check time of the runtime
 import glob # Access files in the folder with *
 import sys # Access command line arguments
 
+
 random.seed(4) # Fix the randomness
 
 """
@@ -103,7 +104,7 @@ iLabel = sys.argv[1] # Get the label of the instance from the command line argum
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
 # (They contain variables in the name)
-instanceReader = InstanceReader(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_*", "", r"TOU prices\TOU prices\TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
+instanceReader = InstanceReader(glob.glob(fr"instances_new\instances_new\flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices\TOU prices\TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -112,7 +113,7 @@ instanceReader.transformInstanceData(dataInstance)
 # Now we know machine number and job number, we can read the rest of the files
 iJob = instanceReader.problem.nJobs # Number of jobs
 iMachine = instanceReader.problem.nMachines # Number of machines
-instanceReader.pathPreparedJobs = fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_flex_high_squared_JOBS.data"
+instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new\preparedjobs_new\flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
 instanceReader.pathPassiveEnergy = fr"passive_energy\passive_energy_{iMachine}machines.txt"
 
 dataPreparedJobs = instanceReader.readPreparedJobs()
