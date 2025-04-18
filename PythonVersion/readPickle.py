@@ -19,12 +19,11 @@ def unpickleInd():
     return bestInd
 
 # Unpickle plot a
-def unpicklePlots(a):  
-    path = glob.glob(os.path.join(r"results/graphic", f"plot_{a}_*"))
-    for file in path:
-        with open(file, 'rb') as pickled:
-            fig = pickle.load(pickled)
+def unpicklePlots(a, b):  
+    path = os.path.join(r"results/graphic/", f"plot_{a}_result_{b}.pkl")
+    with open(path, 'rb') as pickled:
+        fig = pickle.load(pickled)
     plt.show()
         
 
-unpickleInd()
+unpicklePlots(10, 59) # Unpickle plot 1
