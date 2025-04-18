@@ -95,7 +95,7 @@ class Individual:
         if len(self.tasksPermutation) != problem.nTasks or len(self.machinePermutation) != problem.nTasks: # If individual has no data
             return None
         # Create schedule
-        self.schedule = Schedule(problem.nMachines, problem.nJobs, problem.nTasks)
+        self.schedule = Schedule(problem.nMachines, problem.nJobs, problem.nTasks, problem.dueDates)
         # Go through the task permutation and the machine permutation
         for i in range(problem.nTasks):
             job = self.tasksPermutation[i]

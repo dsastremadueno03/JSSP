@@ -1,7 +1,11 @@
 class Schedule:
 
 # Represents the schedule from a given individual
-    def __init__(self, nMachines, nJobs, nTasks):
+    def __init__(self, nMachines, nJobs, nTasks, dueDates):
+        self.dueDates = dueDates
+        self.nMachines = nMachines # Number of machines
+        self.nJobs = nJobs
+        self.nTasks = nTasks # Number of tasks
         self.startTimeTasks = [] # Array of start times for each task 
         self.endTimeTasks = [] # Array of end times for each task
         self.endMachine = [] # Array of end times of the last scheduled task for each machine (initially -1)
