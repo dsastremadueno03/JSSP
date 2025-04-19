@@ -204,8 +204,8 @@ for i in range(59, 60):
             lastBest = bestInGen
             # 2nd -> Create children and evaluate
             for family in currentGeneration:
-                family.append(family[0].merge(family[1], PROBLEM))
-                family.append(family[1].merge(family[0], PROBLEM))
+                family.append(family[0].JOXCrossover(family[1], PROBLEM))
+                family.append(family[1].JOXCrossover(family[0], PROBLEM))
                 best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness
                 
             # Check if it is the best of the generation
@@ -423,15 +423,15 @@ print("Energy Consumption: " + str(parent2.energyCost))
 
 # TEST 1.2 -> Generate two children 
 
-child1 = parent1.merge(parent2, PROBLEM)
+child1 = parent1.JOXCrossover(parent2, PROBLEM)
 print("\nChild 1")
 print(child1)
 print("Fitness: " + str(child1.fitness))
 print("DueDates: " + str(child1.tardiness))
 print("Energy Consumption: " + str(child1.energyCost))
-child2 = parent2.merge(parent1, PROBLEM)
+child2 = parent2.JOXCrossover(parent1, PROBLEM)
 while child2.tasksPermutation == child1.tasksPermutation:
-    child2 = parent2.merge(parent1, PROBLEM)
+    child2 = parent2.JOXCrossover(parent1, PROBLEM)
 print("\nChild 2")
 print(child2) 
 print("Fitness: " + str(child2.fitness))

@@ -192,8 +192,9 @@ class Individual:
         #print("mutated:")
         #print(child)
             
-    # Follows a job order crossover where self takes half or their jobs and the other half from the second parent
-    def merge(self, individual2, problem):
+    # Follows a job order crossover where self takes half or their jobs and the other half 
+    # from the second parent 
+    def JOXCrossover(self, individual2, problem):
         # Prepare matrices to save data
         newTasks = []
         newMachines = []
@@ -207,8 +208,10 @@ class Individual:
         # Select which jobs to take from self
         jobsForSelf = [] # Stores the jobs that should be copied from self
         jobsForSecond = [] # Stores the indexes of the jobs taken from individual2
-        for i in range(problem.nJobs//2):
+        for i in range(problem.nJobs//2): # Half of the jobs from self
+            # Select a random job from self
             job = random.randint(0, problem.nJobs-1)
+            # Check that it is not already in the list of jobs for self
             while job in jobsForSelf:
                 job = random.randint(0, problem.nJobs-1) 
             jobsForSelf.append(job)   
@@ -244,3 +247,50 @@ class Individual:
         child.genSchedule(problem)
         child.evaluate(problem)
         return child
+    
+    # Follows a Precedent Preservative Crossover, which uses a mask to select which jobs 
+    # to take from each parent and which to take from the other parent
+    # The mask is a binary matrix that indicates which jobs to take from each parent
+    def PPXCrossover(self, individual2, problem, oldMask):
+        # Prepare data structures
+        mask = []
+        parent1 = []
+        parent2 = []
+        # Parents' counters since they are asyncronous
+        counter1 = 0
+        counter2 = 0
+        
+        child= []
+        
+        # Create a mask of size nTasks
+        if oldMask == None:
+            for i in range(problem.nTasks):
+                mask.append(random.randint(0, 1))
+        else:
+            mask = oldMask
+            
+        
+        # Copy parents
+        for i in range(problem.nTasks):
+            parent1.append(self.tasksPermutation[i])
+            parent2.append(individual2.tasksPermutation[i])
+                
+        # Create the children
+        for i in range(problem.nTasks):
+            # If the mask is 0, we take the job from parent1
+            if mask[i] == 0:
+                val = parent1.pop(counter1) # Take the job from parent1
+                child.append(val) # Add the job to the child
+                counter1 += 1 # Increase the counter of parent1
+                parent2.remove(val) # Cross out (delete) the gen from parent2
+            
+            # If the mask is 1, we take the job from parent2
+            elif mask[i] == 1:
+                val = parent2.pop(counter2) # Take the job from parent2
+                child.append(val) # Add the job to the child
+                counter2 += 1 # Increase the counter of parent2
+                parent1.remove(val) # Cross out (delete) the gen from parent1
+        
+        return child, mask # Return the child and the mask to do the crossover again
+        
+        
