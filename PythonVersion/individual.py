@@ -239,13 +239,7 @@ class Individual:
                 j += 1
             
         child = Individual(newTasks, newMachines, newIds)
-        
-        # Should it mutate?
-        if random.randint(1, 100) <= problem.mutationProb:
-            Individual.mutate(child)
             
-        child.genSchedule(problem)
-        child.evaluate(problem)
         return child
     
     # Follows a Precedent Preservative Crossover, which uses a mask to select which jobs 
@@ -254,13 +248,22 @@ class Individual:
     def PPXCrossover(self, individual2, problem, oldMask):
         # Prepare data structures
         mask = []
-        parent1 = []
-        parent2 = []
-        # Parents' counters since they are asyncronous
-        counter1 = 0
-        counter2 = 0
+        # Copy the parent1 and parent2
+        parent1 = Individual(self.tasksPermutation.copy(), self.machinePermutation.copy(), self.idPermutation.copy()) # Copy of the parent1
+        parent2 = Individual(individual2.tasksPermutation.copy(), individual2.machinePermutation.copy(), individual2.idPermutation.copy()) # Copy of the parent2
+        # Create the child data structures
+        newTasks = []
+        newMachines = []
+        newIds = []
         
-        child= []
+        #print("inicio")
+        #print(len(parent1.tasksPermutation))
+        #print(len(parent1.machinePermutation))
+        #print(len(parent1.idPermutation))
+        #print(len(parent2.tasksPermutation))
+        #print(len(parent2.machinePermutation))
+        #print(len(parent2.idPermutation))
+        
         
         # Create a mask of size nTasks
         if oldMask == None:
@@ -268,29 +271,78 @@ class Individual:
                 mask.append(random.randint(0, 1))
         else:
             mask = oldMask
-            
-        
-        # Copy parents
-        for i in range(problem.nTasks):
-            parent1.append(self.tasksPermutation[i])
-            parent2.append(individual2.tasksPermutation[i])
                 
         # Create the children
         for i in range(problem.nTasks):
             # If the mask is 0, we take the job from parent1
             if mask[i] == 0:
-                val = parent1.pop(counter1) # Take the job from parent1
-                child.append(val) # Add the job to the child
-                counter1 += 1 # Increase the counter of parent1
-                parent2.remove(val) # Cross out (delete) the gen from parent2
+                id = parent1.idPermutation.pop(0) # Take the job from parent1
+                newIds.append(id) # Add the job to the child
+                newTasks.append(parent1.tasksPermutation.pop(0)) # Take the job from parent1
+                newMachines.append(parent1.machinePermutation.pop(0)) # Take the job from parent1
+                index = parent2.idPermutation.index(id) # Get the index of the task in parent2
+                # Cross out (delete) the gen from parent2
+                parent2.tasksPermutation.pop(index)
+                parent2.machinePermutation.pop(index)
+                parent2.idPermutation.pop(index)
             
             # If the mask is 1, we take the job from parent2
             elif mask[i] == 1:
-                val = parent2.pop(counter2) # Take the job from parent2
-                child.append(val) # Add the job to the child
-                counter2 += 1 # Increase the counter of parent2
-                parent1.remove(val) # Cross out (delete) the gen from parent1
+                id = parent2.idPermutation.pop(0) # Take the job from parent2
+                newIds.append(id) # Add the job to the child
+                newTasks.append(parent2.tasksPermutation.pop(0)) # Take the job from parent2
+                newMachines.append(parent2.machinePermutation.pop(0)) # Take the job from parent2
+                index = parent1.idPermutation.index(id) # Get the index of the task in parent1
+                # Cross out (delete) the gen from parent1
+                parent1.tasksPermutation.pop(index)
+                parent1.machinePermutation.pop(index)
+                parent1.idPermutation.pop(index)
+                
+            #print("Parent1:")
+            #print(len(parent1.tasksPermutation))
+            #print(len(parent1.machinePermutation))
+            #print(len(parent1.idPermutation))
+            #print("Parent2:")
+            #print(len(parent2.tasksPermutation))
+            #print(len(parent2.machinePermutation))
+            #print(len(parent2.idPermutation))
         
+        child = Individual(newTasks, newMachines, newIds) # Create the child
         return child, mask # Return the child and the mask to do the crossover again
         
+    # Defines the merge function, which merges two individuals into one
+    # Creates two children from two parents
+    # It defines the type of crossover to be used
+    # If PPX is selected, it uses the mask to select which jobs to take from each parent
+    # Type 0 -> JOX crossover (job order crossover)
+    # Type 1 -> PPX crossover (precedent preservative crossover)
+    def merge(self, individual2, problem, type):
+        
+        child1 = None
+        child2 = None
+        
+        # Select the crossover type
+        if type == 0: # JOX crossover
+            child1 = self.JOXCrossover(individual2, problem)
+            child2 = individual2.JOXCrossover(self, problem)
+    
+        elif type == 1: # PPX crossover
+            child1, mask = self.PPXCrossover(individual2, problem, None)
+            #print(len(self.tasksPermutation))
+            #print(len(individual2.tasksPermutation))
+            child2, mask = individual2.PPXCrossover(self, problem, mask)
+        
+        # Should it mutate?
+        if random.randint(1, 100) <= problem.mutationProb:
+            Individual.mutate(child1)
+        child1.genSchedule(problem)
+        child1.evaluate(problem)
+        
+        # Should it mutate?
+        if random.randint(1, 100) <= problem.mutationProb:
+            Individual.mutate(child2)
+        child2.genSchedule(problem)
+        child2.evaluate(problem)
+        
+        return child1, child2
         
