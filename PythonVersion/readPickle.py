@@ -22,8 +22,8 @@ def unpickleInd():
     
     
 # Unpickles, as a plot, the evolution of a specific iteration
-def plotEvol(a, b):
-    path = os.path.join(r"results/graphic/", f"plot_{a}_result_{b}.pkl")
+def plotEvol(a, b, xover):
+    path = os.path.join(rf"results/{xover}/graphic/", f"plot_{a}_result_{b}.pkl")
     data = []
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled)
@@ -74,10 +74,10 @@ def groupByJob(ind):
 # Plot of the best individual schedule
 # a -> Instance number
 # b -> Iteration number  
-def plotSchedule(a, b):
+def plotSchedule(a, b, xover):
     # Get schedule data
     data = None
-    path = os.path.join(r"results/pickle/", f"result_{a}.pkl")
+    path = os.path.join(rf"results/{xover}/pickle/", f"result_{a}.pkl")
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled) # data is a list of individuals  
         
@@ -144,4 +144,4 @@ def plotSchedule(a, b):
 
     plt.show()
 
-plotSchedule(59, 1) # Plot the evolution of the first instance (iteration 0)
+plotSchedule(59, 1, "PPX") # Plot the evolution of the first instance (iteration 0)
