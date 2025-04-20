@@ -130,7 +130,7 @@ instanceReader.transformPassiveEnergyData(dataPassiveEnergy)
 # Store the number of iterations per instance (repetitions of the algorithm)
 # MODE -> 0: Minimize; 1: Maximize
 # FACTOR -> 0: Tardiness; 1: Energy Cost
-nIterations, mode, factor, xover = instanceReader.transformMutationProbData(dataMutationProb)
+nIterations, mode, factor, xover, mutType = instanceReader.transformMutationProbData(dataMutationProb)
 
 ### FOR COMPARING RESULTS ONLY
 #instanceReader.problem.passiveEnergy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -177,7 +177,9 @@ with open(path, 'a') as file:
     print(f"Threshold Generations:", file=file)
     print(PROBLEM.thresholdGenetic, file=file)
     print(f"CrossOver Type:", file=file)
-    print(xover, file=file)
+    print({"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}, file=file)
+    print(f"Mutation Type:", file=file)
+    print({"INS" if mutType == 0 else ""}, file=file)
     print(f"Mode:", file=file)
     print(mode, file=file)
     print(f"Factor:", file=file)
@@ -218,7 +220,7 @@ for a in range(nIterations):
         lastBest = bestInGen
         # 2nd -> Create children and evaluate
         for family in currentGeneration:
-            child1, child2 = family[0].merge(family[1], PROBLEM, xover) # Merge the two parents to create two children
+            child1, child2 = family[0].merge(family[1], PROBLEM, xover, mutType) # Merge the two parents to create two children
             family.append(child1)
             family.append(child2)
             best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness

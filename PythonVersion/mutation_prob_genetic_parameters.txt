@@ -1,4 +1,4 @@
-Mutation probability, Threshold, Individuals per generation, Number of iterations per instance, Mode, Factor, Crossover type
+Mutation probability, Threshold, Individuals per generation, Number of iterations per instance, Mode, Factor, Crossover type, Mutation type
 100
 15
 100
@@ -6,3 +6,4 @@ Mutation probability, Threshold, Individuals per generation, Number of iteration
 0
 0
 3
+0

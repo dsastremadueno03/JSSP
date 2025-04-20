@@ -166,7 +166,7 @@ class Individual:
         self.fitness = [totalTardiness, totalEnergyCost] # Fitness is composed of the tardiness and the energy cost (Multiobjective)
         
     # Makes the child mutate (move one gene out of order)
-    def mutate(child):
+    def mutateInsert(child):
         #print("Mutates: ")
         #print(child)
         gene = random.randint(0, len(child.tasksPermutation)-1)
@@ -175,14 +175,13 @@ class Individual:
         # Limit of changing positions
         limitMin = 0
         limitMax = gene
-        for i in range(gene+1):
+        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
             if child.tasksPermutation[i] == job:
                 limitMin = i
-        for i in range(gene+1):
+        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
             if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
                 limitMax = i+gene
                 break
-            
             
         moveTo = random.randint(limitMin, limitMax)
         child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
@@ -191,6 +190,10 @@ class Individual:
         
         #print("mutated:")
         #print(child)
+        
+    def mutate(child, type):
+        if type == 0:
+            return Individual.mutateInsert(child)
             
     # Follows a job order crossover where self takes half or their jobs and the other half 
     # from the second parent 
@@ -405,7 +408,7 @@ class Individual:
     # If PPX is selected, it uses the mask to select which jobs to take from each parent
     # Type 0 -> JOX crossover (job order crossover)
     # Type 1 -> PPX crossover (precedent preservative crossover)
-    def merge(self, individual2, problem, type):
+    def merge(self, individual2, problem, type, mutType):
         
         child1 = None
         child2 = None
@@ -429,13 +432,13 @@ class Individual:
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
-            Individual.mutate(child1)
+            Individual.mutate(child1, mutType)
         child1.genSchedule(problem)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
-            Individual.mutate(child2)
+            Individual.mutate(child2, mutType)
         child2.genSchedule(problem)
         child2.evaluate(problem)
         

@@ -155,7 +155,8 @@ class InstanceReader:
         self.problem.mutationProb = data[0]
         self.problem.thresholdGenetic = data[1]
         self.problem.nIndividual = data[2]
-        return data[3], data[4], data[5], data[6] # Returns the number of iterations per instance to the main directly
+        # Returns: Number of iterations per instance, Mode, Factor, Crossover type, Mutation type
+        return data[3], data[4], data[5], data[6], data[7] 
     
 """
 print("TEST")
