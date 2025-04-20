@@ -60,11 +60,16 @@ class InstanceReader:
     # mutationProb
     # thresholdGenetic
     # nIndividuals
+    # iterationsPerInstance
+    # mode
+    # factor
+    # crossoverType
+    # mutationType
     def readMutationProb(self):
         f = open(self.pathMutationProb, 'r')
         data = []
         f.readline().strip() # Skip first line (only info)
-        for i in range(7):
+        for i in range(8): # Fixed number of params to read
             data.append(int(f.readline().strip())) # Read the values and convert it to int to append it in data
         f.close()
         return data

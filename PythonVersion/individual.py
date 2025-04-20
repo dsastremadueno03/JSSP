@@ -188,12 +188,42 @@ class Individual:
         child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
         child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
         
-        #print("mutated:")
+     # Makes the child mutate (swaps two genes in range)
+    def mutateSwap(child):
+        #print("Mutates: ")
         #print(child)
+        gene = random.randint(0, len(child.tasksPermutation)-1)
+        # Check that it is in range (does not alter the order of priority)
+        job = child.tasksPermutation[gene]
+        # Limit of changing positions
+        limitMin = 0
+        limitMax = gene
+        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
+            if child.tasksPermutation[i] == job:
+                limitMin = i
+        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
+            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
+                limitMax = i+gene
+                break
+        # Get the other gene to swap with
+        moveTo = random.randint(limitMin, limitMax)
+        
+        # Swap the genes
+        taskToMove = child.tasksPermutation[moveTo]
+        machineToMove = child.machinePermutation[moveTo]
+        idToMove = child.idPermutation[moveTo]
+        child.tasksPermutation[moveTo] = child.tasksPermutation[gene]
+        child.machinePermutation[moveTo] = child.machinePermutation[gene]
+        child.idPermutation[moveTo] = child.idPermutation[gene]
+        child.tasksPermutation[gene] = taskToMove
+        child.machinePermutation[gene] = machineToMove
+        child.idPermutation[gene] = idToMove
         
     def mutate(child, type):
         if type == 0:
             return Individual.mutateInsert(child)
+        elif type == 1:
+            return Individual.mutateSwap(child)
             
     # Follows a job order crossover where self takes half or their jobs and the other half 
     # from the second parent 

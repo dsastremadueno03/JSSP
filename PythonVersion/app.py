@@ -145,8 +145,9 @@ totalExecutionTime = 0.0
 
 plt.style.use('_mpl-gallery')
 
-# Restart folder to store the results
-folder = rf"results/{"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}"
+# Restart folder to store the results 
+# ORDER: Min/Max -> Tardiness/EnergyCost -> JOX/PPX/GPMX/GOX -> INS/SWAP
+folder = rf"results/{"Min" if mode == 0 else "Max"}/{"Tardiness" if factor == 0 else "EnergyCost"}/{"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}/{"INS" if mutType == 0 else "SWAP"}/"
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
 os.makedirs(folder+r"/text", exist_ok=True)
@@ -179,7 +180,7 @@ with open(path, 'a') as file:
     print(f"CrossOver Type:", file=file)
     print({"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}, file=file)
     print(f"Mutation Type:", file=file)
-    print({"INS" if mutType == 0 else ""}, file=file)
+    print({"INS" if mutType == 0 else "SWAP"}, file=file)
     print(f"Mode:", file=file)
     print(mode, file=file)
     print(f"Factor:", file=file)
