@@ -218,12 +218,46 @@ class Individual:
         child.tasksPermutation[gene] = taskToMove
         child.machinePermutation[gene] = machineToMove
         child.idPermutation[gene] = idToMove
+    
+    # Makes the child mutate (inverts the order of the genes in a range)
+    def mutateInvert(child):
+        gene = random.randint(0, len(child.tasksPermutation)-1)
+        # Check that it is in range (does not alter the order of priority)
+        job = child.tasksPermutation[gene]
+        # Limit of changing positions
+        limitMin = 0
+        limitMax = gene
+        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
+            if child.tasksPermutation[i] == job:
+                limitMin = i
+        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
+            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
+                limitMax = i+gene
+                break
+            
+        # Get the other limit of the range
+        moveTo = random.randint(limitMin, limitMax)
+        
+        # Invert the genes
+        for i in range((moveTo-gene)//2):
+            # Swap the genes
+            taskToMove = child.tasksPermutation[gene+i]
+            machineToMove = child.machinePermutation[gene+i]
+            idToMove = child.idPermutation[gene+i]
+            child.tasksPermutation[gene+i] = child.tasksPermutation[moveTo-i]
+            child.machinePermutation[gene+i] = child.machinePermutation[moveTo-i]
+            child.idPermutation[gene+i] = child.idPermutation[moveTo-i]
+            child.tasksPermutation[moveTo-i] = taskToMove
+            child.machinePermutation[moveTo-i] = machineToMove
+            child.idPermutation[moveTo-i] = idToMove
         
     def mutate(child, type):
         if type == 0:
             return Individual.mutateInsert(child)
         elif type == 1:
             return Individual.mutateSwap(child)
+        elif type == 2:
+            return Individual.mutateInvert(child)
             
     # Follows a job order crossover where self takes half or their jobs and the other half 
     # from the second parent 
