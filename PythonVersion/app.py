@@ -146,7 +146,7 @@ totalExecutionTime = 0.0
 plt.style.use('_mpl-gallery')
 
 # Restart folder to store the results
-folder = rf"results/{"JOX" if xover == 0 else "PPX"}"
+folder = rf"results/{"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}"
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
 os.makedirs(folder+r"/text", exist_ok=True)
@@ -286,9 +286,6 @@ for a in range(nIterations):
         print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
         print("\n\n", file=file)
         
-    
-    
-    
 best = bestOfTheBests
 # Register the best out of the best individuals for each of the iterations
 path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")

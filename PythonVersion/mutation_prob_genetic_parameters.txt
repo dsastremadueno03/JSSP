@@ -5,4 +5,4 @@ Mutation probability, Threshold, Individuals per generation, Number of iteration
 10
 0
 0
-1
+3

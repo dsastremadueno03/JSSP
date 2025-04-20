@@ -256,15 +256,6 @@ class Individual:
         newMachines = []
         newIds = []
         
-        #print("inicio")
-        #print(len(parent1.tasksPermutation))
-        #print(len(parent1.machinePermutation))
-        #print(len(parent1.idPermutation))
-        #print(len(parent2.tasksPermutation))
-        #print(len(parent2.machinePermutation))
-        #print(len(parent2.idPermutation))
-        
-        
         # Create a mask of size nTasks
         if oldMask == None:
             for i in range(problem.nTasks):
@@ -297,19 +288,117 @@ class Individual:
                 parent1.tasksPermutation.pop(index)
                 parent1.machinePermutation.pop(index)
                 parent1.idPermutation.pop(index)
-                
-            #print("Parent1:")
-            #print(len(parent1.tasksPermutation))
-            #print(len(parent1.machinePermutation))
-            #print(len(parent1.idPermutation))
-            #print("Parent2:")
-            #print(len(parent2.tasksPermutation))
-            #print(len(parent2.machinePermutation))
-            #print(len(parent2.idPermutation))
         
         child = Individual(newTasks, newMachines, newIds) # Create the child
         return child, mask # Return the child and the mask to do the crossover again
+    
+    # Follows a Generalized Partially Mapped Crossover, creating a child that inherits first
+    # the genes from a specified range of the first parent and then the rest from the second parent
+    # begin and end are the indexes of the range of the first parent
+    def GPMXCrossover(self, individual2, problem, oldBegin, oldEnd):
         
+        # Create the child data structures
+        newTasks = []
+        newMachines = []
+        newIds = []
+        
+        for i in range(problem.nTasks):
+            newTasks.append(-1)
+            newMachines.append(-1)
+            newIds.append(-1)
+        
+        # Range of the crossover for parent1
+        begin = 0
+        end = 0
+        
+        # Obtain the range of the crossover
+        if oldBegin == None:
+            begin = random.randint(0, problem.nTasks-1)
+            end = random.randint(begin, problem.nTasks-1)
+        else:
+            begin = oldBegin
+            end = oldEnd
+        
+        # Get the list ranged
+        for i in range(begin, end+1):
+            newTasks[i] = self.tasksPermutation[i]
+            newMachines[i] = self.machinePermutation[i]
+            newIds[i] = self.idPermutation[i]
+        
+        # Get the tasks from parent2 that are not in the range of parent1
+        counter = 0 # Counter for the tasks in parent2
+        for i in range(problem.nTasks): # Go through the permutations
+            if newIds[i] == -1: # If there is no task yet in that position
+                # Check that gen does not come from parent1
+                if individual2.idPermutation[counter] not in newIds:
+                    newTasks[i] = individual2.tasksPermutation[counter]
+                    newMachines[i] = individual2.machinePermutation[counter]
+                    newIds[i] = individual2.idPermutation[counter]
+                    counter += 1 # Move to the next gen of parent2
+                    
+                # If the task is already in the child, then ignore it and move to next task
+                else:
+                    while individual2.idPermutation[counter] in newIds:
+                        counter += 1
+                    newTasks[i] = individual2.tasksPermutation[counter]
+                    newMachines[i] = individual2.machinePermutation[counter]
+                    newIds[i] = individual2.idPermutation[counter]
+                    counter += 1
+                    
+        return Individual(newTasks, newMachines, newIds), begin, end # Return the child and the range of the crossover
+    
+    # Follows a Generalized Order Crossover, creating a child that inherits first
+    # the genes from parent2 and then the rest from parent1 that are in the range
+    # begin and end are the indexes of the range of the first parent
+    def GOXCrossover(self, individual2, problem, oldBegin, oldEnd):
+    # Create the child data structures
+        rangeXover = []
+        newTasks = []
+        newMachines = []
+        newIds = []
+        
+        # Range of the crossover for parent1
+        begin = 0
+        end = 0
+        
+        # Obtain the range of the crossover
+        if oldBegin == None:
+            begin = random.randint(0, problem.nTasks-1)
+            end = random.randint(begin, problem.nTasks-1)
+        else:
+            begin = oldBegin
+            end = oldEnd
+        
+        # Get the list ranged
+        for i in range(begin, end+1):
+            rangeXover.append(self.idPermutation[i])
+        
+        # While the first element of the range is not found in parent2, keep adding 
+        # genes to the child that are not in the range
+        counter = 0 # Counter for the tasks in parent2
+        # Copy the genes from parent2 until the first gen of the range is found
+        while individual2.idPermutation[counter] != rangeXover[0]: 
+            if individual2.idPermutation[counter] not in rangeXover:
+                newTasks.append(individual2.tasksPermutation[counter])
+                newMachines.append(individual2.machinePermutation[counter])
+                newIds.append(individual2.idPermutation[counter])
+            counter += 1
+        
+        # Copy the genes from parent1 that are in the range
+        for i in range(begin, end+1):
+            newTasks.append(self.tasksPermutation[i])
+            newMachines.append(self.machinePermutation[i])
+            newIds.append(self.idPermutation[i])
+        
+        # Keep copying the genes from parent2 until the end of the permutation
+        for i in range(counter, problem.nTasks):
+            if individual2.idPermutation[i] not in rangeXover:
+                newTasks.append(individual2.tasksPermutation[i])
+                newMachines.append(individual2.machinePermutation[i])
+                newIds.append(individual2.idPermutation[i])
+        
+        return Individual(newTasks, newMachines, newIds), begin, end # Return the child and the range of the crossover
+    
     # Defines the merge function, which merges two individuals into one
     # Creates two children from two parents
     # It defines the type of crossover to be used
@@ -328,9 +417,15 @@ class Individual:
     
         elif type == 1: # PPX crossover
             child1, mask = self.PPXCrossover(individual2, problem, None)
-            #print(len(self.tasksPermutation))
-            #print(len(individual2.tasksPermutation))
             child2, mask = individual2.PPXCrossover(self, problem, mask)
+        
+        elif type == 2: # GPMX crossover
+            child1, begin, end = self.GPMXCrossover(individual2, problem, None, None)
+            child2, begin, end = individual2.GPMXCrossover(self, problem, begin, end)
+            
+        elif type == 3: # GOX crossover
+            child1, begin, end = self.GOXCrossover(individual2, problem, None, None)
+            child2, begin, end = individual2.GOXCrossover(self, problem, begin, end)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:

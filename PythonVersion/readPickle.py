@@ -23,7 +23,7 @@ def unpickleInd():
     
 # Unpickles, as a plot, the evolution of a specific iteration
 def plotEvol(a, b, xover):
-    path = os.path.join(rf"results/{xover}/graphic/", f"plot_{a}_result_{b}.pkl")
+    path = os.path.join(rf"results/{xover}/graphic/", f"plot_{b}_result_{a}.pkl")
     data = []
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled)
@@ -144,4 +144,5 @@ def plotSchedule(a, b, xover):
 
     plt.show()
 
-plotSchedule(59, 1, "PPX") # Plot the evolution of the first instance (iteration 0)
+plotEvol(59, 4, "GPMX") # Plot the evolution of the first instance (iteration 0)
+plotSchedule(59, 4, "GPMX") # Plot the evolution of the first instance (iteration 0)
