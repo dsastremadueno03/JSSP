@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt # Show the result plots
 from individual import Individual # Individual class
 from schedule import Schedule # Schedule class
 
+"""
 # Unpickle individuals
 def unpickleInd():
     bestInd = [] # List of individuals
@@ -19,11 +20,11 @@ def unpickleInd():
                 print(ind)
                 i += 1
     return bestInd
-    
+"""
     
 # Unpickles, as a plot, the evolution of a specific iteration
-def plotEvol(a, b, xover):
-    path = os.path.join(rf"results/{xover}/graphic/", f"plot_{b}_result_{a}.pkl")
+def plotEvol(a, b, mode, factor, xover, mutType):
+    path = os.path.join(rf"results/{mode}/{factor}/{xover}/{mutType}/graphic/", f"plot_{b}_result_{a}.pkl")
     data = []
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled)
@@ -74,10 +75,10 @@ def groupByJob(ind):
 # Plot of the best individual schedule
 # a -> Instance number
 # b -> Iteration number  
-def plotSchedule(a, b, xover):
+def plotSchedule(a, b, mode, factor, xover, mutType):
     # Get schedule data
     data = None
-    path = os.path.join(rf"results/{xover}/pickle/", f"result_{a}.pkl")
+    path = os.path.join(rf"results/{mode}/{factor}/{xover}/{mutType}/pickle/", f"result_{a}.pkl")
     with open(path, 'rb') as pickled:
         data = pickle.load(pickled) # data is a list of individuals  
         
@@ -144,5 +145,5 @@ def plotSchedule(a, b, xover):
 
     plt.show()
 
-plotEvol(59, 4, "GPMX") # Plot the evolution of the first instance (iteration 0)
-plotSchedule(59, 4, "GPMX") # Plot the evolution of the first instance (iteration 0)
+plotEvol(59, 4, "Min", "Tardiness", "GOX", "INV") # Plot the evolution of the first instance (iteration 0)
+plotSchedule(59, 4, "Min", "Tardiness", "GOX", "INV") # Plot the evolution of the first instance (iteration 0)
