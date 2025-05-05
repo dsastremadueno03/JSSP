@@ -2,7 +2,6 @@ from individual import Individual
 from instanceReader import InstanceReader
 from problem import Problem
 from schedule import Schedule
-import matplotlib.pyplot as plt # Generate the result plots
 import random # Randomize creation of individuals and other decisions
 import pandas as pd # Export data as csv
 import pickle # Serialize the best individuals
@@ -100,9 +99,9 @@ def getBestTwo(fam, mode, factor, bestInGen):
 
 
 # Parameter to know which file to read
-iLabel = 59 # Get the label of the instance from the command line argument
+iLabel = sys.argv[1] # Get the label of the instance from the command line argument
 print("Instance " + str(iLabel) + " in progress...")
-
+print(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*"))
 # RETRIEVE DATA FROM FILES
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
@@ -143,11 +142,15 @@ N_INDIVIDUALS = PROBLEM.nIndividual
 bests = [] # Store the best individual from each iteration to then pickle the list
 totalExecutionTime = 0.0
 
-plt.style.use('_mpl-gallery')
-
 # Restart folder to store the results 
 # ORDER: Min/Max -> Tardiness/EnergyCost -> JOX/PPX/GPMX/GOX -> INS/SWAP/INV
-folder = rf"results/{"Min" if mode == 0 else "Max"}/{"Tardiness" if factor == 0 else "EnergyCost"}/{"JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"}/{"INS" if mutType == 0 else "SWAP" if mutType == 1 else "INV"}/"
+mode_str = "Min" if mode == 0 else "Max"
+factor_str = "Tardiness" if factor == 0 else "EnergyCost"
+xover_str = "JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"
+mutType_str = "INS" if mutType == 0 else "SWAP" if mutType == 1 else "INV"
+
+folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}"
+
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
 os.makedirs(folder+r"/text", exist_ok=True)

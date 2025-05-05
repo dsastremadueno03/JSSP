@@ -31,7 +31,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 749.7958333333385
 Number of generations: 92
-Calculation time of this iteration (s): 10.478076457977295
+Calculation time of this iteration (s): 3.5615944862365723
 
 
 
@@ -46,7 +46,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 669.7164999999954
 Number of generations: 121
-Calculation time of this iteration (s): 13.043260335922241
+Calculation time of this iteration (s): 4.723522663116455
 
 
 
@@ -61,7 +61,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 764.611166666676
 Number of generations: 91
-Calculation time of this iteration (s): 10.473559141159058
+Calculation time of this iteration (s): 3.626063108444214
 
 
 
@@ -76,7 +76,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 740.1916666666751
 Number of generations: 109
-Calculation time of this iteration (s): 12.345450162887573
+Calculation time of this iteration (s): 4.083175897598267
 
 
 
@@ -91,7 +91,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 707.2098333333358
 Number of generations: 88
-Calculation time of this iteration (s): 9.94970440864563
+Calculation time of this iteration (s): 3.260390043258667
 
 
 
@@ -106,7 +106,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 780.3703333333317
 Number of generations: 97
-Calculation time of this iteration (s): 11.176219940185547
+Calculation time of this iteration (s): 3.7236216068267822
 
 
 
@@ -121,7 +121,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 706.0838333333331
 Number of generations: 118
-Calculation time of this iteration (s): 12.982462406158447
+Calculation time of this iteration (s): 4.3229522705078125
 
 
 
@@ -136,7 +136,7 @@ BEST:
 Tardiness: 2
 Energy Consumption: 826.1938333333388
 Number of generations: 68
-Calculation time of this iteration (s): 8.93800663948059
+Calculation time of this iteration (s): 2.6698355674743652
 
 
 
@@ -151,7 +151,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 760.2698333333326
 Number of generations: 102
-Calculation time of this iteration (s): 11.408039093017578
+Calculation time of this iteration (s): 3.7673730850219727
 
 
 
@@ -166,7 +166,7 @@ BEST:
 Tardiness: 0
 Energy Consumption: 624.3363333333275
 Number of generations: 109
-Calculation time of this iteration (s): 12.105486869812012
+Calculation time of this iteration (s): 4.032315731048584
 
 
 
@@ -184,4 +184,4 @@ Energy Consumption: 624.3363333333275
 
 
 Total execution time (s)
-112.90026545524597
+37.77084445953369
