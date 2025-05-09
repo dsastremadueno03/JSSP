@@ -100,13 +100,14 @@ def getBestTwo(fam, mode, factor, bestInGen):
 
 # Parameter to know which file to read
 iLabel = sys.argv[1] # Get the label of the instance from the command line argument
+iParam = sys.argv[2] # Get the parameters of the instance from the command line argument
 print("Instance " + str(iLabel) + " in progress...")
 print(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*"))
 # RETRIEVE DATA FROM FILES
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
 # (They contain variables in the name)
-instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", r"mutation_prob_genetic_parameters.txt")
+instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", fr"parameters/parameters_{iParam}.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
