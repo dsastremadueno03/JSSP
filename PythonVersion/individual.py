@@ -174,38 +174,56 @@ class Individual:
         job = child.tasksPermutation[gene]
         # Limit of changing positions
         limitMin = 0
-        limitMax = gene
-        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
+        limitMax = len(child.tasksPermutation)-1
+        for i in range(gene): # Check the previous task from the same job to mark as minimum limit
             if child.tasksPermutation[i] == job:
-                limitMin = i
-        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
-            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
-                limitMax = i+gene
+                limitMin = i + 1
+
+        for i in range(gene+1, len(child.tasksPermutation)): # Check the next task from the same job to mark as maximum limit
+            if child.tasksPermutation[i] == job:
+                limitMax = i - 1
                 break
+
+        if limitMin >= limitMax:
+            return # If the gene cannot be moved, return
             
         moveTo = random.randint(limitMin, limitMax)
         child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
         child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
         child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
         
-     # Makes the child mutate (swaps two genes in range)
+    # Makes the child mutate (swaps two genes in range)
     def mutateSwap(child):
         #print("Mutates: ")
         #print(child)
         gene = random.randint(0, len(child.tasksPermutation)-1)
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
+
+        # Array to store found jobs
+        foundJobs = []
+        foundJobs.append(job)
+
         # Limit of changing positions
         limitMin = 0
-        limitMax = gene
-        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
-            if child.tasksPermutation[i] == job:
-                limitMin = i
-        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
-            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
-                limitMax = i+gene
+        limitMax = len(child.tasksPermutation)-1
+
+        # Minimum limit
+        for i in range(gene): # Check from the start if gene is in the found jobs.
+            if child.tasksPermutation[i] in foundJobs: # If already in, update minimum limit
+                limitMin = i + 1
+            else: # Else, append it to the found jobs
+                foundJobs.append(child.tasksPermutation[i])
+
+        # Maximum limit
+        for i in range(gene+1, len(child.tasksPermutation)): # Check the next task from the same job to mark as maximum limit
+            if child.tasksPermutation[i] in foundJobs: # If already in, update maximum limit and stop, since it cannot go further
+                limitMax = i - 1
                 break
-        # Get the other gene to swap with
+
+        if limitMin >= limitMax:
+            return # If the gene cannot be moved, return
+            
         moveTo = random.randint(limitMin, limitMax)
         
         # Swap the genes
@@ -224,32 +242,55 @@ class Individual:
         gene = random.randint(0, len(child.tasksPermutation)-1)
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
+
+        # Array to store found jobs
+        foundJobs = []
+        foundJobs.append(job)
+
         # Limit of changing positions
         limitMin = 0
-        limitMax = gene
-        for i in range(gene+1): # Check the previous task from the same job to mark as minimum limit
-            if child.tasksPermutation[i] == job:
-                limitMin = i
-        for i in range(gene+1): # Check the next task from the same job to mark as maximum limit
-            if (i+gene < len(child.tasksPermutation)) and (child.tasksPermutation[i+gene] == job):
-                limitMax = i+gene
+        limitMax = len(child.tasksPermutation)-1
+
+        # Minimum limit
+        for i in range(gene): # Check from the start if gene is in the found jobs.
+            if child.tasksPermutation[i] in foundJobs: # If already in, update minimum limit
+                limitMin = i + 1
+            else: # Else, append it to the found jobs
+                foundJobs.append(child.tasksPermutation[i])
+
+        # Maximum limit
+        for i in range(gene+1, len(child.tasksPermutation)): # Check the next task from the same job to mark as maximum limit
+            if child.tasksPermutation[i] in foundJobs: # If already in, update maximum limit and stop, since it cannot go further
+                limitMax = i - 1
                 break
-            
-        # Get the other limit of the range
+
+        if limitMin >= limitMax:
+            return # If the gene cannot be moved, return
+
         moveTo = random.randint(limitMin, limitMax)
+
+        # Check that the gene is not the same as the moveTo
+        if gene == moveTo:
+            return
+        
+        # Get the biggest and smallest of the two genes
+        maxValue = max(gene, moveTo)
+        minValue = min(gene, moveTo)
         
         # Invert the genes
-        for i in range((moveTo-gene)//2):
+        for i in range(abs(maxValue-minValue)//2+1):
+            if minValue + i == maxValue - i: # If the two genes are the same, break
+                break
             # Swap the genes
-            taskToMove = child.tasksPermutation[gene+i]
-            machineToMove = child.machinePermutation[gene+i]
-            idToMove = child.idPermutation[gene+i]
-            child.tasksPermutation[gene+i] = child.tasksPermutation[moveTo-i]
-            child.machinePermutation[gene+i] = child.machinePermutation[moveTo-i]
-            child.idPermutation[gene+i] = child.idPermutation[moveTo-i]
-            child.tasksPermutation[moveTo-i] = taskToMove
-            child.machinePermutation[moveTo-i] = machineToMove
-            child.idPermutation[moveTo-i] = idToMove
+            taskToMove = child.tasksPermutation[minValue+i]
+            machineToMove = child.machinePermutation[minValue+i]
+            idToMove = child.idPermutation[minValue+i]
+            child.tasksPermutation[minValue+i] = child.tasksPermutation[maxValue-i]
+            child.machinePermutation[minValue+i] = child.machinePermutation[maxValue-i]
+            child.idPermutation[minValue+i] = child.idPermutation[maxValue-i]
+            child.tasksPermutation[maxValue-i] = taskToMove
+            child.machinePermutation[maxValue-i] = machineToMove
+            child.idPermutation[maxValue-i] = idToMove
         
     def mutate(child, type):
         if type == 0:
@@ -496,13 +537,20 @@ class Individual:
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
+            print("Mutates child 1: ")
+            print(child1.tasksPermutation)
             Individual.mutate(child1, mutType)
+            print(child1.tasksPermutation)
         child1.genSchedule(problem)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
+            print("Mutates child 2: ")
+            print(child2.tasksPermutation)
             Individual.mutate(child2, mutType)
+            print(child2.tasksPermutation)
+            print()
         child2.genSchedule(problem)
         child2.evaluate(problem)
         
