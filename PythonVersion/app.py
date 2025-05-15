@@ -102,12 +102,11 @@ def getBestTwo(fam, mode, factor, bestInGen):
 iLabel = sys.argv[1] # Get the label of the instance from the command line argument
 iParam = sys.argv[2] # Get the parameters of the instance from the command line argument
 print("Instance " + str(iLabel) + " in progress...")
-print(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*"))
 # RETRIEVE DATA FROM FILES
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
 # (They contain variables in the name)
-instanceReader = InstanceReader(glob.glob(fr"instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"TOU prices/TOU prices/TOU_prices_v1", "", fr"parameters/parameters_{iParam}.txt")
+instanceReader = InstanceReader(glob.glob(fr"PythonVersion/instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"PythonVersion/TOU prices/TOU prices/TOU_prices_v1", "", fr"PythonVersion/parameters/parameters_{iParam}.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -116,8 +115,8 @@ instanceReader.transformInstanceData(dataInstance)
 # Now we know machine number and job number, we can read the rest of the files
 iJob = instanceReader.problem.nJobs # Number of jobs
 iMachine = instanceReader.problem.nMachines # Number of machines
-instanceReader.pathPreparedJobs = glob.glob(fr"preparedjobs_new/preparedjobs_new/flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
-instanceReader.pathPassiveEnergy = fr"passive_energy/passive_energy_{iMachine}machines.txt"
+instanceReader.pathPreparedJobs = glob.glob(fr"PythonVersion/preparedjobs_new/preparedjobs_new/flexible_jobshop_{iLabel}_{iJob}jobs_{iMachine}machines_*")[0]
+instanceReader.pathPassiveEnergy = fr"PythonVersion/passive_energy/passive_energy_{iMachine}machines.txt"
 
 dataPreparedJobs = instanceReader.readPreparedJobs()
 dataTOUPrices = instanceReader.readTOUPrices()

@@ -184,13 +184,12 @@ class Individual:
                 limitMax = i - 1
                 break
 
-        if limitMin >= limitMax:
-            return # If the gene cannot be moved, return
-            
-        moveTo = random.randint(limitMin, limitMax)
-        child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
-        child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
-        child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
+        # Check that there is a range to move
+        if limitMin < limitMax:    
+            moveTo = random.randint(limitMin, limitMax)
+            child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
+            child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
+            child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
         
     # Makes the child mutate (swaps two genes in range)
     def mutateSwap(child):
@@ -221,21 +220,20 @@ class Individual:
                 limitMax = i - 1
                 break
 
-        if limitMin >= limitMax:
-            return # If the gene cannot be moved, return
+        # Check that there is a range to swap
+        if limitMin < limitMax:     
+            moveTo = random.randint(limitMin, limitMax)
             
-        moveTo = random.randint(limitMin, limitMax)
-        
-        # Swap the genes
-        taskToMove = child.tasksPermutation[moveTo]
-        machineToMove = child.machinePermutation[moveTo]
-        idToMove = child.idPermutation[moveTo]
-        child.tasksPermutation[moveTo] = child.tasksPermutation[gene]
-        child.machinePermutation[moveTo] = child.machinePermutation[gene]
-        child.idPermutation[moveTo] = child.idPermutation[gene]
-        child.tasksPermutation[gene] = taskToMove
-        child.machinePermutation[gene] = machineToMove
-        child.idPermutation[gene] = idToMove
+            # Swap the genes
+            taskToMove = child.tasksPermutation[moveTo]
+            machineToMove = child.machinePermutation[moveTo]
+            idToMove = child.idPermutation[moveTo]
+            child.tasksPermutation[moveTo] = child.tasksPermutation[gene]
+            child.machinePermutation[moveTo] = child.machinePermutation[gene]
+            child.idPermutation[moveTo] = child.idPermutation[gene]
+            child.tasksPermutation[gene] = taskToMove
+            child.machinePermutation[gene] = machineToMove
+            child.idPermutation[gene] = idToMove
     
     # Makes the child mutate (inverts the order of the genes in a range)
     def mutateInvert(child):
@@ -264,33 +262,32 @@ class Individual:
                 limitMax = i - 1
                 break
 
-        if limitMin >= limitMax:
-            return # If the gene cannot be moved, return
+        # Check that there is a range to invert
+        if limitMin < limitMax:
+            
+            moveTo = random.randint(limitMin, limitMax)
 
-        moveTo = random.randint(limitMin, limitMax)
-
-        # Check that the gene is not the same as the moveTo
-        if gene == moveTo:
-            return
-        
-        # Get the biggest and smallest of the two genes
-        maxValue = max(gene, moveTo)
-        minValue = min(gene, moveTo)
-        
-        # Invert the genes
-        for i in range(abs(maxValue-minValue)//2+1):
-            if minValue + i == maxValue - i: # If the two genes are the same, break
-                break
-            # Swap the genes
-            taskToMove = child.tasksPermutation[minValue+i]
-            machineToMove = child.machinePermutation[minValue+i]
-            idToMove = child.idPermutation[minValue+i]
-            child.tasksPermutation[minValue+i] = child.tasksPermutation[maxValue-i]
-            child.machinePermutation[minValue+i] = child.machinePermutation[maxValue-i]
-            child.idPermutation[minValue+i] = child.idPermutation[maxValue-i]
-            child.tasksPermutation[maxValue-i] = taskToMove
-            child.machinePermutation[maxValue-i] = machineToMove
-            child.idPermutation[maxValue-i] = idToMove
+            # Check that the gene is not the same as the moveTo
+            if gene != moveTo:
+            
+                # Get the biggest and smallest of the two genes
+                maxValue = max(gene, moveTo)
+                minValue = min(gene, moveTo)
+                
+                # Invert the genes
+                for i in range(abs(maxValue-minValue)//2+1):
+                    if minValue + i == maxValue - i: # If the two genes are the same, break
+                        break
+                    # Swap the genes
+                    taskToMove = child.tasksPermutation[minValue+i]
+                    machineToMove = child.machinePermutation[minValue+i]
+                    idToMove = child.idPermutation[minValue+i]
+                    child.tasksPermutation[minValue+i] = child.tasksPermutation[maxValue-i]
+                    child.machinePermutation[minValue+i] = child.machinePermutation[maxValue-i]
+                    child.idPermutation[minValue+i] = child.idPermutation[maxValue-i]
+                    child.tasksPermutation[maxValue-i] = taskToMove
+                    child.machinePermutation[maxValue-i] = machineToMove
+                    child.idPermutation[maxValue-i] = idToMove
         
     def mutate(child, type):
         if type == 0:
@@ -537,20 +534,13 @@ class Individual:
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
-            print("Mutates child 1: ")
-            print(child1.tasksPermutation)
             Individual.mutate(child1, mutType)
-            print(child1.tasksPermutation)
         child1.genSchedule(problem)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
-            print("Mutates child 2: ")
-            print(child2.tasksPermutation)
             Individual.mutate(child2, mutType)
-            print(child2.tasksPermutation)
-            print()
         child2.genSchedule(problem)
         child2.evaluate(problem)
         
