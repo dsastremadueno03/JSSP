@@ -143,13 +143,15 @@ bests = [] # Store the best individual from each iteration to then pickle the li
 totalExecutionTime = 0.0
 
 # Restart folder to store the results 
-# ORDER: Min/Max -> Tardiness/EnergyCost -> JOX/PPX/GPMX/GOX -> INS/SWAP/INV
+# ORDER: Min/Max -> Tardiness/EnergyCost -> JOX/PPX/GPMX/GOX -> INS/SWAP/INV -> xoverProb -> mutationProb
 mode_str = "Min" if mode == 0 else "Max"
 factor_str = "Tardiness" if factor == 0 else "EnergyCost"
 xover_str = "JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover == 2 else "GOX"
 mutType_str = "INS" if mutType == 0 else "SWAP" if mutType == 1 else "INV"
+xover_prob = PROBLEM.xoverProb
+mutType_prob = PROBLEM.mutationProb
 
-folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}"
+folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}/{xover_prob}/{mutType_prob}/"
 
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
@@ -178,6 +180,8 @@ with open(path, 'a') as file:
     print(nIterations, file=file)
     print(f"Mutation Probability:", file=file)
     print(PROBLEM.mutationProb, file=file)
+    print(f"Crossover Probability:", file=file)
+    print(PROBLEM.xoverProb, file=file)
     print(f"Threshold Generations:", file=file)
     print(PROBLEM.thresholdGenetic, file=file)
     print(f"CrossOver Type:", file=file)
@@ -224,9 +228,10 @@ for a in range(nIterations):
         lastBest = bestInGen
         # 2nd -> Create children and evaluate
         for family in currentGeneration:
-            child1, child2 = family[0].merge(family[1], PROBLEM, xover, mutType) # Merge the two parents to create two children
-            family.append(child1)
-            family.append(child2)
+            if random.randint(1, 100) <= PROBLEM.xoverProb:
+                child1, child2 = family[0].merge(family[1], PROBLEM, xover, mutType) # Merge the two parents to create two children
+                family.append(child1)
+                family.append(child2)
             best = getBestTwo(family, mode, factor, bestInGen) # Minimize by tardiness
             
         # Check if it is the best of the generation
