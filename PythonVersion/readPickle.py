@@ -145,5 +145,4 @@ def plotSchedule(a, b, mode, factor, xover, mutType):
 
     plt.show()
 
-plotEvol(30, 9, "Min", "Tardiness", "JOX", "INV") # Plot the evolution
-plotSchedule(30, 9, "Min", "Tardiness", "JOX", "INV") # Plot the schedule
+plotSchedule(1, 3, "Min", "Tardiness", "GOX", "INS") # Plot the schedule

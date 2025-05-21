@@ -1,4 +1,5 @@
 from individual import Individual
+from problem import Problem
 
 # INDIVIDUAL COMPARISON TESTS
 
@@ -56,10 +57,18 @@ def test_Individual_Max_Energy():
     assert ind1.isBetter(ind2, 1, 1) == True # True because individual 2 energy cost is smaller
     ind2.fitness = [5, 850] 
     assert ind1.isBetter(ind2, 1, 1) == False # False because both individuals are equal
+
+def test_Individual_Repair():
+    problem = Problem(None, 2, 8, 2, 2, 2, 2, 2, 2, 2, 2, 2) # Create a problem instance
+    ind3 = Individual([0, 1, 1, 0, 1, 0, 1, 1], [1, 0, 0, 1, 0, 1, 1, 1], [0, 3, 5, 1, 4, 2, 7, 6])
+    ind3.repair(problem) # Repair the individual
+    print(ind3.idPermutation)
+    assert ind3.idPermutation == [0, 3, 4, 1, 5, 2, 6, 7] # True because the idPermutation is repaired
     
 
 test_Individual_Min_Tardiness()
 test_Individual_Min_Energy()
 test_Individual_Max_Tardiness()
 test_Individual_Max_Energy()
+test_Individual_Repair()
 print("All tests passed")

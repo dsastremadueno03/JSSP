@@ -164,6 +164,44 @@ class Individual:
         totalEnergyCost = self.updateTotalEnergyConsumptionPrice(problem)
         # Calculates fitness (using comparison function)
         self.fitness = [totalTardiness, totalEnergyCost] # Fitness is composed of the tardiness and the energy cost (Multiobjective)
+
+    # Check if the individual is valid
+    # If the individual is not valid, repair it
+    # It goes through the tasks in order of task and job, and swaps the tasks that are not in the right order
+    def repair(self, problem):
+        counter = 0
+        for j in range(problem.nJobs): # Go through the jobs
+            error = -1 # Error location
+            i = 0 # Index for the tasks in the individual
+            while i < problem.nTasks: # Go through the tasks in the individual
+                #print("j: ", j)
+                #print("i: ", i)
+                #print("counter: ", counter)
+                #print("error: ", error)
+                if self.tasksPermutation[i] == j: # If we find the job we are in
+                    if counter == self.idPermutation[i]: # If the task is in the right order
+                        if error != -1: # If there was an error, swap the tasks
+                            # Swap the tasks
+                            tempTask = self.tasksPermutation[i]
+                            tempMachine = self.machinePermutation[i]
+                            tempId = self.idPermutation[i]
+                            self.tasksPermutation[i] = self.tasksPermutation[error]
+                            self.machinePermutation[i] = self.machinePermutation[error]
+                            self.idPermutation[i] = self.idPermutation[error]
+                            self.tasksPermutation[error] = tempTask
+                            self.machinePermutation[error] = tempMachine
+                            self.idPermutation[error] = tempId
+
+                            i = error # Set the index to the error location
+                            error = -1 # Reset the error
+                            counter += 1 # Move to the next task
+                        else:
+                            counter += 1 # Look for the next task
+                    else: 
+                        if error == -1:
+                            error = i
+                i += 1 # Move to the next
+                    
         
     # Makes the child mutate (move one gene out of order)
     def mutateInsert(child):
@@ -535,12 +573,14 @@ class Individual:
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child1, mutType)
+        child1.repair(problem)
         child1.genSchedule(problem)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child2, mutType)
+        child2.repair(problem)
         child2.genSchedule(problem)
         child2.evaluate(problem)
         

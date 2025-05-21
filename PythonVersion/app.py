@@ -151,7 +151,7 @@ mutType_str = "INS" if mutType == 0 else "SWAP" if mutType == 1 else "INV"
 xover_prob = PROBLEM.xoverProb
 mutType_prob = PROBLEM.mutationProb
 
-folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}/{xover_prob}/{mutType_prob}/"
+folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}/{xover_prob}/{mutType_prob}/{N_INDIVIDUALS}"
 
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
@@ -289,6 +289,7 @@ for a in range(nIterations):
         print(f"\nITERATION {a+1}\n", file=file)
         print("BEST:", file=file)
         print(best, file=file)
+        print(best.idPermutation, file=file)
         print(best.schedule.startTimeTasks, file=file)
         print(best.schedule.endTimeTasks, file=file)
         print("Tardiness: " + str(best.fitness[0]), file=file)
@@ -319,6 +320,10 @@ with open(path, 'wb') as file:
 
 print("Execution time (s)")
 print(totalExecutionTime)
+
+for lines in PROBLEM.tasksMachines:
+    for line in lines:
+        print(line)
 
 """
 # Plot of fitness evolution
