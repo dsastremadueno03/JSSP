@@ -52,44 +52,65 @@ class Individual:
     # mode = 1 -> Maximize
     # factor = 0 -> Tardiness
     # factor = 1 -> Energy cost
-    def isBetter(self, other, mode, factor):
+    # compType = 0 -> Lexico-graphical comparison
+    # compType = 1 -> Mono comparison
+    def isBetter(self, other, mode, factor, compType):
         EPSILON = np.finfo(float).eps
-        if mode == 0:
-            # Minimize
-            if factor == 0:
-                # Minimize tardiness
-                if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
-                    return self.fitness[1] < other.fitness[1]
-                elif self.fitness[0] < other.fitness[0]: 
-                    return True
-                return False
-            else:
-                # Minimize energy cost
-                if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
-                    return self.fitness[0] < other.fitness[0]
-                elif self.fitness[1] < other.fitness[1]:
-                    return True
-                return False
-        if mode == 1:
-            # Maximize
-            if factor == 0:
-                # Maximize tardiness
-                if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
-                    return self.fitness[1] > other.fitness[1]
-                elif self.fitness[0] > other.fitness[0]:
-                    return True
-                return False
-            else:
-                # Maximize energy cost
-                if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
-                    return self.fitness[0] > other.fitness[0]
-                elif self.fitness[1] > other.fitness[1]:
-                    return True
-                return False
+        # Lexico-graphical comparison
+        if compType == 0:
+            if mode == 0:
+                # Minimize
+                if factor == 0:
+                    # Minimize tardiness
+                    if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
+                        return self.fitness[1] < other.fitness[1]
+                    elif self.fitness[0] < other.fitness[0]: 
+                        return True
+                    return False
+                else:
+                    # Minimize energy cost
+                    if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
+                        return self.fitness[0] < other.fitness[0]
+                    elif self.fitness[1] < other.fitness[1]:
+                        return True
+                    return False
+            if mode == 1:
+                # Maximize
+                if factor == 0:
+                    # Maximize tardiness
+                    if abs(self.fitness[0] - other.fitness[0]) < EPSILON:
+                        return self.fitness[1] > other.fitness[1]
+                    elif self.fitness[0] > other.fitness[0]:
+                        return True
+                    return False
+                else:
+                    # Maximize energy cost
+                    if abs(self.fitness[1] - other.fitness[1]) < EPSILON:
+                        return self.fitness[0] > other.fitness[0]
+                    elif self.fitness[1] > other.fitness[1]:
+                        return True
+                    return False
                 
-        
-        
+        # Mono-objective comparison
+        elif compType == 1:
+            if mode == 0:
+                # Minimize
+                if factor == 0:
+                    # Minimize tardiness
+                    return self.fitness[0] < other.fitness[0]
+                else:
+                    # Minimize energy cost
+                    return self.fitness[1] < other.fitness[1]
+            if mode == 1:
+                # Maximize
+                if factor == 0:
+                    # Maximize tardiness
+                    return self.fitness[0] > other.fitness[0]
+                else:
+                    # Maximize energy cost
+                    return self.fitness[1] > other.fitness[1]
     
+
     # Generates a schedule based on the individual
     def genSchedule(self, problem):
         if len(self.tasksPermutation) != problem.nTasks or len(self.machinePermutation) != problem.nTasks: # If individual has no data

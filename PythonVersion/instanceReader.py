@@ -5,7 +5,7 @@ import glob # For the path of the instance file
 class InstanceReader:
 
     def __init__(self, pathIntances, pathPreparedJobs, pathTOUPrices, pathPassiveEnergy, pathMutationProb):
-        self.problem = Problem([], 0, 0, 0, [], [], [], [], 0, 0, 0, 0) # Initialize the problem
+        self.problem = Problem([], 0, 0, 0, [], [], [], [], 0, 0, 0, 0, 0) # Initialize the problem
         self.pathIntances = pathIntances
         self.pathPreparedJobs = pathPreparedJobs
         self.pathTOUPrices = pathTOUPrices
@@ -69,7 +69,7 @@ class InstanceReader:
         f = open(self.pathMutationProb, 'r')
         data = []
         f.readline().strip() # Skip first line (only info)
-        for i in range(9): # Fixed number of params to read
+        for i in range(10): # Fixed number of params to read
             data.append(int(f.readline().strip())) # Read the values and convert it to int to append it in data
         f.close()
         return data
@@ -161,6 +161,7 @@ class InstanceReader:
         self.problem.thresholdGenetic = data[1]
         self.problem.nIndividual = data[2]
         self.problem.xoverProb = data[8]
+        self.problem.compType = data[9]
         # Returns: Number of iterations per instance, Mode, Factor, Crossover type, Mutation type
         return data[3], data[4], data[5], data[6], data[7] 
     

@@ -289,7 +289,6 @@ for a in range(nIterations):
         print(f"\nITERATION {a+1}\n", file=file)
         print("BEST:", file=file)
         print(best, file=file)
-        print(best.idPermutation, file=file)
         print(best.schedule.startTimeTasks, file=file)
         print(best.schedule.endTimeTasks, file=file)
         print("Tardiness: " + str(best.fitness[0]), file=file)
