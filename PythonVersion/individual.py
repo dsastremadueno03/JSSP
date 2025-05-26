@@ -186,6 +186,7 @@ class Individual:
         # Calculates fitness (using comparison function)
         self.fitness = [totalTardiness, totalEnergyCost] # Fitness is composed of the tardiness and the energy cost (Multiobjective)
 
+    """
     # Check if the individual is valid
     # If the individual is not valid, repair it
     # It goes through the tasks in order of task and job, and swaps the tasks that are not in the right order
@@ -223,12 +224,48 @@ class Individual:
                             error = i
                 i += 1 # Move to the next
                     
+    """
+    # Generate the idPermutation and machinePermutation based on the tasksPermutation
+    def generateIDMachine(self, problem):
+        # idPermutation
+        newIds = []
+        jobs = [] # Count task in real time for each job
+        #Initialize to 0
+        for i in range(problem.nJobs):
+            jobs.append(0)
+        # Create the permutation
+        for job in self.tasksPermutation:
+            totalJob = 0 # Id calculation
+            jobs[job] += 1 # Count the number of tasks in the job in real time
+            for i in range(job): # Add the number of tasks in the previous jobs
+                totalJob += problem.jobTasks[i]
+            totalJob += jobs[job] - 1 # Add the number of tasks in the job that are already done
+            newIds.append(totalJob) # Add the id of the task in the job
         
+
+        # machinePermutation
+        newMachines = []
+        for i in range(problem.nTasks):
+            id = newIds[i] # Get the task index from the new idPermutation
+            index = self.idPermutation.index(id) # Get the index of the task in the original idPermutation
+            newMachines.append(self.machinePermutation[index]) # Get the machine of the task in the original machinePermutation
+            
+
+        # Updade the permutations
+        self.idPermutation = newIds # Set the idPermutation
+        self.machinePermutation = newMachines # Set the machinePermutation
+
+        
+            
+        
+
     # Makes the child mutate (move one gene out of order)
     def mutateInsert(child):
         #print("Mutates: ")
         #print(child)
         gene = random.randint(0, len(child.tasksPermutation)-1)
+
+        """
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
         # Limit of changing positions
@@ -242,19 +279,21 @@ class Individual:
             if child.tasksPermutation[i] == job:
                 limitMax = i - 1
                 break
-
-        # Check that there is a range to move
-        if limitMin < limitMax:    
-            moveTo = random.randint(limitMin, limitMax)
-            child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
-            child.machinePermutation.insert(moveTo, child.machinePermutation.pop(gene))
-            child.idPermutation.insert(moveTo, child.idPermutation.pop(gene))
+        """
+        
+        moveTo = random.randint(0, len(child.tasksPermutation)-1)
+        while moveTo == gene: # Check that the moveTo is not the same as the gene
+            moveTo = random.randint(0, len(child.tasksPermutation)-1)
+        child.tasksPermutation.insert(moveTo, child.tasksPermutation.pop(gene))
+        
         
     # Makes the child mutate (swaps two genes in range)
     def mutateSwap(child):
         #print("Mutates: ")
         #print(child)
         gene = random.randint(0, len(child.tasksPermutation)-1)
+
+        """
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
 
@@ -281,22 +320,23 @@ class Individual:
 
         # Check that there is a range to swap
         if limitMin < limitMax:     
-            moveTo = random.randint(limitMin, limitMax)
+        
+        """
+        moveTo = random.randint(0, len(child.tasksPermutation)-1)
+        while moveTo == gene: # Check that the moveTo is not the same as the gene
+            moveTo = random.randint(0, len(child.tasksPermutation)-1)
             
-            # Swap the genes
-            taskToMove = child.tasksPermutation[moveTo]
-            machineToMove = child.machinePermutation[moveTo]
-            idToMove = child.idPermutation[moveTo]
-            child.tasksPermutation[moveTo] = child.tasksPermutation[gene]
-            child.machinePermutation[moveTo] = child.machinePermutation[gene]
-            child.idPermutation[moveTo] = child.idPermutation[gene]
-            child.tasksPermutation[gene] = taskToMove
-            child.machinePermutation[gene] = machineToMove
-            child.idPermutation[gene] = idToMove
+        # Swap the genes
+        taskToMove = child.tasksPermutation[moveTo]
+        child.tasksPermutation[moveTo] = child.tasksPermutation[gene]
+        child.tasksPermutation[gene] = taskToMove
+
     
     # Makes the child mutate (inverts the order of the genes in a range)
     def mutateInvert(child):
         gene = random.randint(0, len(child.tasksPermutation)-1)
+
+        """
         # Check that it is in range (does not alter the order of priority)
         job = child.tasksPermutation[gene]
 
@@ -323,31 +363,26 @@ class Individual:
 
         # Check that there is a range to invert
         if limitMin < limitMax:
-            
-            moveTo = random.randint(limitMin, limitMax)
+        """
 
-            # Check that the gene is not the same as the moveTo
-            if gene != moveTo:
+        moveTo = random.randint(0, len(child.tasksPermutation)-1)
+        while moveTo == gene: # Check that the moveTo is not the same as the gene
+            moveTo = random.randint(0, len(child.tasksPermutation)-1)
             
-                # Get the biggest and smallest of the two genes
-                maxValue = max(gene, moveTo)
-                minValue = min(gene, moveTo)
+        # Get the biggest and smallest of the two genes
+        maxValue = max(gene, moveTo)
+        minValue = min(gene, moveTo)
                 
-                # Invert the genes
-                for i in range(abs(maxValue-minValue)//2+1):
-                    if minValue + i == maxValue - i: # If the two genes are the same, break
-                        break
-                    # Swap the genes
-                    taskToMove = child.tasksPermutation[minValue+i]
-                    machineToMove = child.machinePermutation[minValue+i]
-                    idToMove = child.idPermutation[minValue+i]
-                    child.tasksPermutation[minValue+i] = child.tasksPermutation[maxValue-i]
-                    child.machinePermutation[minValue+i] = child.machinePermutation[maxValue-i]
-                    child.idPermutation[minValue+i] = child.idPermutation[maxValue-i]
-                    child.tasksPermutation[maxValue-i] = taskToMove
-                    child.machinePermutation[maxValue-i] = machineToMove
-                    child.idPermutation[maxValue-i] = idToMove
-        
+        # Invert the genes
+        for i in range(abs(maxValue-minValue)//2+1):
+            if minValue + i == maxValue - i: # If the two genes are the same, break
+                break
+            # Swap the genes
+            taskToMove = child.tasksPermutation[minValue+i]
+            child.tasksPermutation[minValue+i] = child.tasksPermutation[maxValue-i]
+            child.tasksPermutation[maxValue-i] = taskToMove
+
+
     def mutate(child, type):
         if type == 0:
             return Individual.mutateInsert(child)
@@ -594,14 +629,14 @@ class Individual:
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child1, mutType)
-        child1.repair(problem)
+        child1.generateIDMachine(problem)
         child1.genSchedule(problem)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child2, mutType)
-        child2.repair(problem)
+        child2.generateIDMachine(problem)
         child2.genSchedule(problem)
         child2.evaluate(problem)
         

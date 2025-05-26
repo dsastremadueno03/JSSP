@@ -57,10 +57,10 @@ def genIndividual(problem):
         jobs[job] += 1
         # Choose machine to do task in
         machine = random.randint(0, problem.nMachines-1)
-        totalJob = 0
-        for j in range(job):
+        totalJob = 0 # Stores the index of the task
+        for j in range(job): # Get the total number of tasks done before this job
             totalJob += problem.jobTasks[j]
-        taskId = totalJob + jobs[job]-1
+        taskId = totalJob + jobs[job]-1 
         while problem.getData(machine, taskId) == [-1,-1]: # As long as that machine can do the task
             machine = random.randint(0, problem.nMachines-1)
         machines.append(machine)
@@ -83,10 +83,11 @@ def getBestTwo(fam, mode, factor, bestInGen):
         fam.sort(key = lambda x: (x.fitness[1], x.fitness[0]), reverse=(mode == 1))
     result = fam[:2] # Take the best two
     # Check if the best of the generation is better than the best two of the current family
-    if result[0].isBetter(best, mode, factor):
+    if result[0].isBetter(best, mode, factor, PROBLEM.compType):
         best = result[0]
-    if result[1].isBetter(best, mode, factor):
+    if result[1].isBetter(best, mode, factor, PROBLEM.compType):
         best = result[1]
+        
     result.append(best) # Add the best individual of the generation
     return result
 
@@ -276,7 +277,7 @@ for a in range(nIterations):
     
     # If the best of this generation is better than the best registered for this instance 
     # or the latter is None, update
-    if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor):
+    if bestOfTheBests is None or best.isBetter(bestOfTheBests, mode, factor, PROBLEM.compType):
         bestOfTheBests = best
 
     # Add the best candidate to the rest of best 
