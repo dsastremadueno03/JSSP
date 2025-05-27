@@ -87,7 +87,7 @@ def getBestTwo(fam, mode, factor, bestInGen):
         best = result[0]
     if result[1].isBetter(best, mode, factor, PROBLEM.compType):
         best = result[1]
-        
+
     result.append(best) # Add the best individual of the generation
     return result
 
@@ -290,6 +290,7 @@ for a in range(nIterations):
         print(f"\nITERATION {a+1}\n", file=file)
         print("BEST:", file=file)
         print(best, file=file)
+        print(best.idPermutation, file=file)
         print(best.schedule.startTimeTasks, file=file)
         print(best.schedule.endTimeTasks, file=file)
         print("Tardiness: " + str(best.fitness[0]), file=file)
@@ -320,6 +321,7 @@ with open(path, 'wb') as file:
 
 print("Execution time (s)")
 print(totalExecutionTime)
+print(PROBLEM.dueDates)
 
 for lines in PROBLEM.tasksMachines:
     for line in lines:

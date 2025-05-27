@@ -145,6 +145,4 @@ def plotSchedule(a, b, mode, factor, xover, mutType):
 
     plt.show()
 
-plotEvol(45, 1, "Min", "Tardiness", "JOX", "INS") # Plot the evolution of the tardiness and energy cost
-plotEvol(45, 5, "Min", "Tardiness", "JOX", "INS") # Plot the evolution of the tardiness and energy cost
-plotEvol(45, 7, "Min", "Tardiness", "JOX", "INS") # Plot the evolution of the tardiness and energy cost
+plotSchedule(5, 9, "Min", "Tardiness", "GOX", "SWAP") # Plot the evolution of the tardiness and energy cost

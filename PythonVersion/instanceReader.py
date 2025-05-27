@@ -121,7 +121,7 @@ class InstanceReader:
             self.problem.dueDates.append(job[0][0][4]) # Append the due date for the job
             for task in job:
                 setPossibleMachines = []
-                for machine in task:
+                for machine in task: # [a, b, c, d, e]
                         machineId = machine[0]
                         if machineId not in setPossibleMachines: # There are multiple options in the input file (just take first one)
                             duration = machine[1]
@@ -144,7 +144,7 @@ class InstanceReader:
             fixedData.append(value.strip(','))
         finalData = []
         for i in range(len(fixedData)):
-            for _ in range(60): # For each minute
+            for j in range(60): # For each minute
                 finalData.append(int(fixedData[i])/60/100.0) # Obtain decimal value (/60 for minutes, /100 for two-digit decimal value)
         self.problem.energyPrices = finalData
         
