@@ -147,8 +147,8 @@ class Individual:
             # Energy consumed
             consumption = problem.getData(machine, task)[1] # Access to energy cost of doing the task in a specific machine
             # Time of use
-            startTime = self.schedule.startTimeTasks[i] 
-            endTime = self.schedule.endTimeTasks[i] 
+            startTime = self.schedule.startTimeTasks[task] 
+            endTime = self.schedule.endTimeTasks[task] 
             # Calculates with the range of time in the schedule the price of the active energy consumed
             for j in range(startTime, endTime): 
                 actEnergyPrice += problem.energyPrices[j%(60*24)] * consumption # Multiply minute price by the amount of energy consumed
