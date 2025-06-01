@@ -5,7 +5,7 @@ Mutation probability(0-100), Threshold, Individuals per generation, Number of it
 10
 0
 0
-3
-1
+2
+2
 100
 0

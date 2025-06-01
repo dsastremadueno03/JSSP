@@ -76,6 +76,7 @@ def generateCSV(data):
         "N Individuals",
         "N Iterations",
         "Mutation Prob.",
+        "Xover Prob.",
         "Threshold",
         "Mode",
         "Factor",
