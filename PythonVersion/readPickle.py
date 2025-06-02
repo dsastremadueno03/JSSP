@@ -5,13 +5,14 @@ import matplotlib.pyplot as plt # Show the result plots
 from individual import Individual # Individual class
 from schedule import Schedule # Schedule class
 
-"""
+
+
 # Unpickle individuals
 def unpickleInd():
     bestInd = [] # List of individuals
     i = 1
     # Stores the individuals in the folder "results"
-    path = glob.glob(os.path.join(r"results/pickle", "*.pkl"))
+    path = glob.glob(os.path.join(r"PythonVersion/results/Min/EnergyCost/GPMX/INV/100/15/200/pickle", "*.pkl"))
     for file in path:
         with open(file, 'rb') as pickled:
             bestInd = pickle.load(pickled)
@@ -20,7 +21,7 @@ def unpickleInd():
                 print(ind)
                 i += 1
     return bestInd
-"""
+
     
 # Unpickles, as a plot, the evolution of a specific iteration
 def plotEvol(a, b, mode, factor, xover, mutType):
@@ -145,4 +146,6 @@ def plotSchedule(a, b, mode, factor, xover, mutType):
 
     plt.show()
 
-plotSchedule(5, 9, "Min", "Tardiness", "GOX", "SWAP") # Plot the evolution of the tardiness and energy cost
+#plotSchedule(5, 9, "Min", "Tardiness", "GOX", "SWAP") # Plot the evolution of the tardiness and energy cost
+#plotEvol(5, 9, "Min", "Tardiness", "GOX", "SWAP") # Plot the evolution of the tardiness and energy cost
+unpickleInd() # Unpickle the individuals and print them

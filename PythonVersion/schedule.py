@@ -24,20 +24,37 @@ class Schedule:
 
     
     # Updates the schedule in a certain task, machine and job
-    def updateSchedule(self, job, machine, taskPosition, problem):
+    def updateSchedule(self, job, machine, taskPosition, problem, factor):
+        # Update the start time of the task
         if self.endTask[job] == -1 and self.endMachine[machine] == -1: # If it is the first task to do in its job and machine
             self.startTimeTasks[taskPosition] = 0
         else:
             self.startTimeTasks[taskPosition] = max(self.endTask[job], self.endMachine[machine]) # It will start inmediately after the previous task is done and the machine is free
-        #print("\nTask: " + str(taskPosition))
-        #print("Machine: " + str(machine))
-        #print("EndTask: " + str(self.endTask[job]) + " EndMachine: " + str(self.endMachine[machine]))
-        #print("Time Taken: "+ str(problem.getData(machine, taskPosition)[0]))
+              
+        # If looking for energy cost, read the most expensive prices and avoid using them 
+        if factor == 1: 
+            # Get prices per hour
+            priceInHours = [] 
+            isOnlyPrice = True # Check if there is only one same price for all the hours
+            for i in range(24):
+                newPrice = problem.energyPrices[i*60] # Get the price for the hour
+                if len(priceInHours) > 0 and newPrice not in priceInHours:
+                    isOnlyPrice = False
+                priceInHours.append(newPrice)
+            # Get the 4 most expensive prices
+            mostExpensivePrices = sorted(priceInHours, reverse=True)[:12]
+            # If the price of the start time is one of the most expensive, add 1 minute to the start time
+            if not isOnlyPrice: # If there is only one price, need to avoid infinite loop
+                while problem.energyPrices[self.startTimeTasks[taskPosition] % 1440] in mostExpensivePrices:
+                    self.startTimeTasks[taskPosition] += 1
+
         # Update data of arrays
-        self.endTimeTasks[taskPosition] = self.startTimeTasks[taskPosition] + problem.getData(machine, taskPosition)[0]
-        if self.startMachine[machine] == -1:
-            self.startMachine[machine] = self.startTimeTasks[taskPosition]
-        self.endMachine[machine] = self.endTimeTasks[taskPosition]
-        self.endTask[job] = self.endTimeTasks[taskPosition]
+        self.endTimeTasks[taskPosition] = self.startTimeTasks[taskPosition] + problem.getData(machine, taskPosition)[0] # Time taken by the task
+        if self.startMachine[machine] == -1: # If it is the first task to do in its machine
+            self.startMachine[machine] = self.startTimeTasks[taskPosition] # Update the start time of the machine
+        self.endMachine[machine] = self.endTimeTasks[taskPosition] # Update the end time of the machine
+        self.endTask[job] = self.endTimeTasks[taskPosition] # Update the end time of the job
         
+
+            
     

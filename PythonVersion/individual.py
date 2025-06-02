@@ -112,7 +112,7 @@ class Individual:
     
 
     # Generates a schedule based on the individual
-    def genSchedule(self, problem):
+    def genSchedule(self, problem, factor):
         if len(self.tasksPermutation) != problem.nTasks or len(self.machinePermutation) != problem.nTasks: # If individual has no data
             return None
         # Create schedule
@@ -122,7 +122,7 @@ class Individual:
             job = self.tasksPermutation[i]
             machine = self.machinePermutation[i]
             task = self.idPermutation[i]
-            self.schedule.updateSchedule(job, machine, task, problem)
+            self.schedule.updateSchedule(job, machine, task, problem, factor)
         #print("Schedule has been generated correctly!")
         
     # Calculates the tardiness array of the individual
@@ -604,7 +604,7 @@ class Individual:
     # If PPX is selected, it uses the mask to select which jobs to take from each parent
     # Type 0 -> JOX crossover (job order crossover)
     # Type 1 -> PPX crossover (precedent preservative crossover)
-    def merge(self, individual2, problem, type, mutType):
+    def merge(self, individual2, problem, factor, type, mutType):
         
         child1 = None
         child2 = None
@@ -630,14 +630,14 @@ class Individual:
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child1, mutType)
         child1.generateIDMachine(problem)
-        child1.genSchedule(problem)
+        child1.genSchedule(problem, factor)
         child1.evaluate(problem)
         
         # Should it mutate?
         if random.randint(1, 100) <= problem.mutationProb:
             Individual.mutate(child2, mutType)
         child2.generateIDMachine(problem)
-        child2.genSchedule(problem)
+        child2.genSchedule(problem, factor)
         child2.evaluate(problem)
         
         return child1, child2
