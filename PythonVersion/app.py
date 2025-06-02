@@ -175,6 +175,13 @@ if os.path.exists(folder+rf"/pickle/result_{iLabel}.pkl"):
 if glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl") != []: 
     for each in glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl"):
         os.remove(each)
+
+######## ONLY FOR COMPARING FIXED AND VARIABLE ENERGY COST
+os.makedirs(folder+r"/text/var_cost", exist_ok=True) 
+# Delete the files if they exist to overwrite them
+if os.path.exists(folder+rf"/text/var_cost/result_{iLabel}.txt"):
+    os.remove(folder+rf"/text/var_cost/result_{iLabel}.txt")
+########
         
 path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
 with open(path, 'a') as file: 
@@ -318,10 +325,6 @@ for a in range(nIterations):
     var_best.fitness = best.fitness.copy() # Copy the fitness of the best individual
     # Update the energy cost with the variable prices
     var_best.fitness = [var_best.fitness[0], var_best.updateTotalEnergyConsumptionPrice(OTHER_PROBLEM)]
-    os.makedirs(folder+r"/text/var_cost", exist_ok=True) 
-    # Delete the files if they exist to overwrite them
-    if os.path.exists(folder+rf"/text/var_cost/result_{iLabel}.txt"):
-        os.remove(folder+rf"/text/var_cost/result_{iLabel}.txt")
     path = os.path.join(folder+r"/text/var_cost", f"result_{iLabel}.txt")
     with open(path, 'a') as file: 
         print(f"\nITERATION {a+1}\n", file=file)
