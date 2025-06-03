@@ -107,7 +107,8 @@ print("Instance " + str(iLabel) + " in progress...")
 
 # Create the instance reader, but do not read the prepared jobs nor the passive energy yet 
 # (They contain variables in the name)
-instanceReader = InstanceReader(glob.glob(fr"PythonVersion/instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"PythonVersion/TOU prices/TOU prices/TOU_prices_v1_avg", "", fr"PythonVersion/parameters/parameters_{iParam}.txt")
+# IF COMPARING FIXED AND VARIABLE ENERGY COST, USE TOU_prices_v1_avg!!!
+instanceReader = InstanceReader(glob.glob(fr"PythonVersion/instances_new/instances_new/flexible_jobshop_{iLabel}_*")[0], "", r"PythonVersion/TOU prices/TOU prices/TOU_prices_v1", "", fr"PythonVersion/parameters/parameters_{iParam}.txt")
 
 # Read and assign data retrieved to the problem
 dataInstance = instanceReader.readInstance()
@@ -139,11 +140,11 @@ nIterations, mode, factor, xover, mutType = instanceReader.transformMutationProb
 PROBLEM = instanceReader.problem #FINAL
 
 ######### ONLY FOR COMPARING FIXED AND VARIABLE ENERGY COST
-ir = InstanceReader("", "", r"PythonVersion/TOU prices/TOU prices/TOU_prices_v1", "", "")
-ir.transformTOUPricesData(ir.readTOUPrices())
-OTHER_PROBLEM = Problem(PROBLEM.jobTasks, PROBLEM.nJobs, PROBLEM.nTasks, PROBLEM.nMachines, ir.problem.energyPrices, PROBLEM.dueDates,
-                        PROBLEM.passiveEnergy, PROBLEM.tasksMachines, PROBLEM.mutationProb, PROBLEM.thresholdGenetic, PROBLEM.nIndividual, 
-                        PROBLEM.xoverProb, PROBLEM.compType)
+#ir = InstanceReader("", "", r"PythonVersion/TOU prices/TOU prices/TOU_prices_v1", "", "")
+#ir.transformTOUPricesData(ir.readTOUPrices())
+#OTHER_PROBLEM = Problem(PROBLEM.jobTasks, PROBLEM.nJobs, PROBLEM.nTasks, PROBLEM.nMachines, ir.problem.energyPrices, PROBLEM.dueDates,
+#                        PROBLEM.passiveEnergy, PROBLEM.tasksMachines, PROBLEM.mutationProb, PROBLEM.thresholdGenetic, PROBLEM.nIndividual, 
+#                        PROBLEM.xoverProb, PROBLEM.compType)
 ##########
 
 
@@ -177,10 +178,10 @@ if glob.glob(folder+rf"/graphic/*_result_{iLabel}.pkl") != []:
         os.remove(each)
 
 ######## ONLY FOR COMPARING FIXED AND VARIABLE ENERGY COST
-os.makedirs(folder+r"/text/var_cost", exist_ok=True) 
+#os.makedirs(folder+r"/text/var_cost", exist_ok=True) 
 # Delete the files if they exist to overwrite them
-if os.path.exists(folder+rf"/text/var_cost/result_{iLabel}.txt"):
-    os.remove(folder+rf"/text/var_cost/result_{iLabel}.txt")
+#if os.path.exists(folder+rf"/text/var_cost/result_{iLabel}.txt"):
+#    os.remove(folder+rf"/text/var_cost/result_{iLabel}.txt")
 ########
         
 path = os.path.join(folder+r"/text", f"result_{iLabel}.txt")
@@ -317,27 +318,27 @@ for a in range(nIterations):
 
 
 ######### ONLY FOR COMPARING FIXED AND VARIABLE ENERGY COST
-    # Calculate the energy cost with the actual prices
-    var_best = Individual(best.tasksPermutation, best.machinePermutation, best.idPermutation)
-    var_best.schedule = Schedule(PROBLEM.nMachines, PROBLEM.nJobs, PROBLEM.nTasks, PROBLEM.dueDates)
-    var_best.schedule.startTimeTasks = best.schedule.startTimeTasks.copy() # Copy the start times of the best individual
-    var_best.schedule.endTimeTasks = best.schedule.endTimeTasks.copy() # Copy the end times of the best individual
-    var_best.fitness = best.fitness.copy() # Copy the fitness of the best individual
-    # Update the energy cost with the variable prices
-    var_best.fitness = [var_best.fitness[0], var_best.updateTotalEnergyConsumptionPrice(OTHER_PROBLEM)]
-    path = os.path.join(folder+r"/text/var_cost", f"result_{iLabel}.txt")
-    with open(path, 'a') as file: 
-        print(f"\nITERATION {a+1}\n", file=file)
-        print("BEST:", file=file)
-        print(var_best, file=file)
-        print(var_best.idPermutation, file=file)
-        print(var_best.schedule.startTimeTasks, file=file)
-        print(var_best.schedule.endTimeTasks, file=file)
-        print("Tardiness: " + str(var_best.fitness[0]), file=file)
-        print("Energy Consumption: " + str(var_best.fitness[1]), file=file)
-        print("Number of generations: " + str(N_GENERATIONS), file=file)
-        print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
-        print("\n\n", file=file)
+    # # Calculate the energy cost with the actual prices
+    # var_best = Individual(best.tasksPermutation, best.machinePermutation, best.idPermutation)
+    # var_best.schedule = Schedule(PROBLEM.nMachines, PROBLEM.nJobs, PROBLEM.nTasks, PROBLEM.dueDates)
+    # var_best.schedule.startTimeTasks = best.schedule.startTimeTasks.copy() # Copy the start times of the best individual
+    # var_best.schedule.endTimeTasks = best.schedule.endTimeTasks.copy() # Copy the end times of the best individual
+    # var_best.fitness = best.fitness.copy() # Copy the fitness of the best individual
+    # # Update the energy cost with the variable prices
+    # var_best.fitness = [var_best.fitness[0], var_best.updateTotalEnergyConsumptionPrice(OTHER_PROBLEM)]
+    # path = os.path.join(folder+r"/text/var_cost", f"result_{iLabel}.txt")
+    # with open(path, 'a') as file: 
+    #     print(f"\nITERATION {a+1}\n", file=file)
+    #     print("BEST:", file=file)
+    #     print(var_best, file=file)
+    #     print(var_best.idPermutation, file=file)
+    #     print(var_best.schedule.startTimeTasks, file=file)
+    #     print(var_best.schedule.endTimeTasks, file=file)
+    #     print("Tardiness: " + str(var_best.fitness[0]), file=file)
+    #     print("Energy Consumption: " + str(var_best.fitness[1]), file=file)
+    #     print("Number of generations: " + str(N_GENERATIONS), file=file)
+    #     print("Calculation time of this iteration (s): " + str(endIter - initIter), file=file)
+    #     print("\n\n", file=file)
 ##########
 
         
