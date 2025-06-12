@@ -41,8 +41,8 @@ class Schedule:
                 if len(priceInHours) > 0 and newPrice not in priceInHours:
                     isOnlyPrice = False
                 priceInHours.append(newPrice)
-            # Get the 4 most expensive prices
-            mostExpensivePrices = sorted(priceInHours, reverse=True)[:12]
+            # Get the most expensive prices
+            mostExpensivePrices = sorted(priceInHours, reverse=True)[:problem.peakHoursAvoided]
             # If the price of the start time is one of the most expensive, add 1 minute to the start time
             if not isOnlyPrice: # If there is only one price, need to avoid infinite loop
                 while problem.energyPrices[self.startTimeTasks[taskPosition] % 1440] in mostExpensivePrices:

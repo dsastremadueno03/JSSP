@@ -161,8 +161,10 @@ xover_str = "JOX" if xover == 0 else "PPX" if xover == 1 else "GPMX" if xover ==
 mutType_str = "INS" if mutType == 0 else "SWAP" if mutType == 1 else "INV"
 xover_prob = PROBLEM.xoverProb
 mutType_prob = PROBLEM.mutationProb
+compType = PROBLEM.compType
+peakHoursAvoided = PROBLEM.peakHoursAvoided
 
-folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}/{xover_prob}/{mutType_prob}/{N_INDIVIDUALS}"
+folder = rf"results/{mode_str}/{factor_str}/{xover_str}/{mutType_str}/{xover_prob}/{mutType_prob}/{N_INDIVIDUALS}/{compType}/{peakHoursAvoided}"
 
 os.makedirs(folder, exist_ok=True)
 os.makedirs(folder+r"/pickle", exist_ok=True)
@@ -210,6 +212,10 @@ with open(path, 'a') as file:
     print(mode, file=file)
     print(f"Factor:", file=file)
     print(factor, file=file)
+    print(f"Comparison Type:", file=file)
+    print(compType, file=file)
+    print(f"Peak Hours Avoided:", file=file)
+    print(peakHoursAvoided, file=file)
 
 
 

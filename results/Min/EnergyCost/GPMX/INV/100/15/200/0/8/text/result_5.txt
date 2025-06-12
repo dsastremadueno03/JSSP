@@ -1,0 +1,203 @@
+Number of Jobs:
+3
+Number of Machines:
+2
+Number of Tasks:
+4
+Number of Individuals:
+200
+Number of Iterations:
+10
+Mutation Probability:
+15
+Crossover Probability:
+100
+Threshold Generations:
+25
+CrossOver Type:
+{'GPMX'}
+Mutation Type:
+{'INV'}
+Mode:
+0
+Factor:
+1
+Comparison Type:
+0
+Peak Hours Avoided:
+8
+
+ITERATION 1
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.8682756423950195
+
+
+
+
+ITERATION 2
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.4185175895690918
+
+
+
+
+ITERATION 3
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.6789562702178955
+
+
+
+
+ITERATION 4
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.9214024543762207
+
+
+
+
+ITERATION 5
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.6738293170928955
+
+
+
+
+ITERATION 6
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.4074351787567139
+
+
+
+
+ITERATION 7
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.2802550792694092
+
+
+
+
+ITERATION 8
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.5459859371185303
+
+
+
+
+ITERATION 9
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.3163323402404785
+
+
+
+
+ITERATION 10
+
+BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[3, 0, 1, 2]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+Number of generations: 26
+Calculation time of this iteration (s): 1.415647029876709
+
+
+
+
+SUMMARY
+
+
+GLOBAL BEST:
+[2, 0, 1, 1]
+[1, 1, 1, 0]
+[180, 230, 340, 0]
+[230, 340, 480, 120]
+Tardiness: 180
+Energy Consumption: 210.34999999999974
+
+
+Total execution time (s)
+15.526636838912964
