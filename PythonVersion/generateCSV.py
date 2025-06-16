@@ -6,8 +6,8 @@ import csv # For the CSV file
 
 # Columns:
 # Instance,	N Jobs,	N Machines,	N Tasks, N Individuals,	N Iterations,	
-# Mutation Prob., Threshold, Mode, Factor, Xover type, Mutation type,
-# Factor, Iteration, Tardiness, Energy,	N Generations, Execution Time
+# Mutation Prob., Xover Prob., Threshold, Xover type, Mutation type, Mode,
+# Factor, Comparison type, Peak Hours Avoided, Iteration, Tardiness, Energy, N Generations, Execution Time
 
 # Updates the global data with the data of a file to be written in the CSV file
 def getInstanceData(instance, data):
